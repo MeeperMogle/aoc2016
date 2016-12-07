@@ -1,0 +1,86 @@
+<script>
+	const input = ['R1', 'L4', 'L5', 'L5', 'R2', 'R2', 'L1', 'L1', 'R2', 'L3', 'R4', 'R3', 'R2', 'L4', 'L2', 'R5', 'L1', 'R5', 'L5', 'L2', 'L3', 'L1', 'R1', 'R4', 'R5', 'L3', 'R2', 'L4', 'L5', 'R1', 'R2', 'L3', 'R3', 'L3', 'L1', 'L2', 'R5', 'R4', 'R5', 'L5', 'R1', 'L190', 'L3', 'L3', 'R3', 'R4', 'R47', 'L3', 'R5', 'R79', 'R5', 'R3', 'R1', 'L4', 'L3', 'L2', 'R194', 'L2', 'R1', 'L2', 'L2', 'R4', 'L5', 'L5', 'R1', 'R1', 'L1', 'L3', 'L2', 'R5', 'L3', 'L3', 'R4', 'R1', 'R5', 'L4', 'R3', 'R1', 'L1', 'L2', 'R4', 'R1', 'L2', 'R4', 'R4', 'L5', 'R3', 'L5', 'L3', 'R1', 'R1', 'L3', 'L1', 'L1', 'L3', 'L4', 'L1', 'L2', 'R1', 'L5', 'L3', 'R2', 'L5', 'L3', 'R5', 'R3', 'L4', 'L2', 'R2', 'R4', 'R4', 'L4', 'R5', 'L1', 'L3', 'R3', 'R4', 'R4', 'L5', 'R4', 'R2', 'L3', 'R4', 'R2', 'R1', 'R2', 'L4', 'L2', 'R2', 'L5', 'L5', 'L3', 'R5', 'L5', 'L1', 'R4', 'L1', 'R1', 'L1', 'R4', 'L5', 'L3', 'R4', 'R1', 'L3', 'R4', 'R1', 'L3', 'L1', 'R1', 'R2', 'L4', 'L2', 'R1', 'L5', 'L4', 'L5'];
+	
+	// Hold relative coordinates
+	let x = 0;
+	let y = 0;
+	
+	// Keep track of available & current directions
+	const directions = {north: {name: 'north'}, south: {name: 'south'}, east: {name: 'east'}, west: {name: 'west'}};
+	let direction = directions.north;
+	
+	// Store relative directions on all current directions
+	directions.north['L'] = directions.west;
+	directions.north['R'] = directions.east;
+	
+	directions.south['L'] = directions.east;
+	directions.south['R'] = directions.west;
+	
+	directions.east['L'] = directions.north;
+	directions.east['R'] = directions.south;
+	
+	directions.west['L'] = directions.south;
+	directions.west['R'] = directions.north;
+	
+	// Keep track of visited locations; format is x: [y1, y2, ...]
+	// Pre-existing y means we've been here before, which sets firstVisitTwice to {x, y}
+	const visited = {};
+	let firstVisitTwice = null;
+	
+	// Each movement instruction...
+	input.forEach(change => {
+		// First letter is direction
+		const turn = change[0];
+		
+		// Based on the turn direction, do a relative turn that way.
+		direction = directions[direction.name][turn];
+		
+		// Parse steps for this movement unit
+		let distance = parseInt(change.substring(1));
+		
+		// For every step in this particular movement unit
+		// Would be better with a collision calculation for each line...
+		while(distance > 0) {
+			// De/increment x/y by 1 depending on the direction
+			switch(direction) {
+				case directions.north:
+					y -= 1;
+					break;
+				case directions.south:
+					y += 1;
+					break;
+				case directions.east:
+					x += 1;
+					break;
+				case directions.west:
+					x -= 1;
+					break;
+			}
+			// Decrement distance units left
+			distance--;
+			
+			// Create (or check for duplicates in) array for this x-coordinate
+			if (!visited[x]) {
+				visited[x] = [];
+			} else if (visited[x].includes(y)) {
+				// Duplicate found means we've been here before,
+				// and if firstVisitTwice is not set then it will now be set. Subsequent sets do nothing.
+				firstVisitTwice = !firstVisitTwice ? {x, y} : firstVisitTwice;
+			}
+			
+			// Add current y to visited x-coordinate
+			visited[x].push(y);
+		}
+	});
+	// Calculate total steps in the sequence / steps until revisiting a location.
+	// Steps are calculated by amount of relative steps on the x-axis plus relative steps on the y-axis.
+	const totalSteps = Math.abs(x) + Math.abs(y);
+	const totalStepsUntilDuplicate = Math.abs(firstVisitTwice.x) + Math.abs(firstVisitTwice.y);
+	
+	// Print results to console
+	console.log(`Part 1: ${x},${y} = ${totalSteps} steps`);
+	console.log(`Part 2: ${firstVisitTwice.x},${firstVisitTwice.y} = ${totalStepsUntilDuplicate} steps`);
+	
+	// Print results on page
+	document.write(`Part 1: ${x},${y} = ${totalSteps} steps (230)<br>Part 2: ${firstVisitTwice.x},${firstVisitTwice.y} = ${totalStepsUntilDuplicate} steps (154)`);
+</script>

@@ -14,6 +14,7 @@
                                              'D': {value: 'D',},
     };
     // Reference adjacent positions; in case of a border, return itself
+    // Algorithm for this one as well would be nice...
     stepMapper['1']['U'] = stepMapper['1'];
     stepMapper['1']['R'] = stepMapper['1'];
     stepMapper['1']['D'] = stepMapper['3'];
@@ -79,16 +80,24 @@
     stepMapper['D']['D'] = stepMapper['D'];
     stepMapper['D']['L'] = stepMapper['D'];
 
+   // Start at 5, as per the instructions
     let position = stepMapper['5'];
 
+    // Store sequence of numbers one ends up on
     let numberSequence = '';
 
+    // For each string of steps
     input.forEach(numberSteps => {
+        // for each step
         numberSteps.split('').forEach(direction => {
+            // move position in that direction
             position = position[direction];
         });
+        // Print final number, add to number sequence
         console.log(position.value);
         numberSequence += position.value;
     });
-    console.log('Code: ', numberSequence);
+    // Answer added after the fact for easy verification on refactoring
+    console.log('Code (AC8C8):', numberSequence);
+    document.write('Code (AC8C8): ' + numberSequence);
 </script>

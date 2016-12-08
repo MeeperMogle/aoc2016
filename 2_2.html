@@ -1,0 +1,94 @@
+<script>
+    const input = ['UUURRRRULRDLRDRRDURDDDLLDLLLULDUDDLDLULUURULRLDLRRLLLRRDRRLDDLLULUDUDDLRDRDUURDLURUURLRULLDDURULRRURDUURLULUUUURDDDDUUDLULRULLLRLLRRRURDLLRLLRRRUURULRDRUUDDDDDLLLRURRURRUURDUURDDRDLULRRLLLDRRRLURRLLURLDRRDDLDLRRLLRDRLLLLDLULDLRRDRRLDDURLULLUDLUDRRDRRLRLULURDRLRLUUUDLRLDLLLURDUDULULDDRUUURLLLDLLDDUDDRURURUDDLUULRDRRRRLDRDDURLUDURDULLDLUDLULDRLRLLRLLLLRURDURLLDRRDRLRUUUUULLLRUDURUDLLLUDLLLLRDLDRDUDRURLUDDUDDURLUUUUDDLLUDLULLLLLDUDLLRLRRDDDULULRLDRLLULDLUDLLURULRDDUURULRDLDLDLRL',
+'URUUURDULUDLUUUUDDRRRDRRRLDUDLRDRRDRDDLRUULDLLDUDULLLRLDRDRRLDLDLUUDRUULDUDULDUDURURDDURULDLURULRLULDUDDUULDLLLDDURDDRDDURUULUUDRLDDULDRRRRDURRUDLLLURDDDLRULLRDDRDDDDLUUDRDUULRRRRURULDDDLDDRDRRUDRRURUDRDDLDRRRLLURURUULUUDRDULLDRLRDRRDDURDUDLDRLUDRURDURURULDUUURDUULRRRRRUDLLULDDDRLULDDULUDRRRDDRUDRRDLDLRUULLLLRRDRRLUDRUULRDUDRDRRRDDRLLRUUDRLLLUDUDLULUUDULDRRRRDDRURULDULLURDLLLDUUDLLUDRLDURRRLDDDURUDUDURRULDD',
+'LRUDDULLLULRLUDUDUDRLLUUUULLUDLUUUUDULLUURDLLRDUDLRUDRUDDURURRURUDLLLRLDLUDRRRRRRDLUURLRDDDULRRUDRULRDRDDUULRDDLDULDRRRDDLURRURLLLRURDULLRUUUDDUDUURLRLDDUURLRDRRLURLDRLLUUURDRUUDUUUDRLURUUUDLDRRLRLLRRUURULLLRLLDLLLDULDDLDULDLDDRUDURDDURDUDURDLLLRRDDLULLLUDURLUDDLDLUUDRDRUDUUDLLDDLLLLDRDULRDLDULLRUDDUULDUDLDDDRUURLDRRLURRDDRUUDRUDLLDLULLULUDUDURDDRLRDLRLDRLDDRULLLRUDULDRLRLRULLRLLRRRLLRRRDDRULRUURRLLLRULDLUDRRDDLLLUDDUDDDLURLUDRDLURUUDLLDLULURRLLDURUDDDDRLULRDDLRLDDLRLLDDRRLRDUDUUULRRLRULUDURDUDRLRLRUDUDLLRRRRLRRUDUL',
+'RULLLLUUUDLLDLLRULLRURRULDDRDLUULDRLLRUDLLRRLRDURLLDUUUUURUUURDLUURRLDDDLRRRRLRULDUDDLURDRRUUDLRRRDLDDUDUDDRUDURURLDULLDLULDLLUDLULRDRLLURRLLDURLDLRDLULUDDULDLDDDDDUURRDRURLDLDULLURDLLDDLLUDLDLDRLRLDLRDRLDLRRUUDRURLUUUDLURUULDUDRDULLDURUDLUUURRRLLDUDUDDUUULLLRUULDLURUDDRLUDRDDLDLLUDUDRRRDDUUULUULLLRLLUURDUUDRUUULULLDLDRUUDURLLUULRLDLUURLLUUDRURDDRLURULDUDUUDRRUUURDULRLDUUDDRURURDRRULDDDRLUDLLUUDURRRLDLRLRDRURLURLLLRLDDLRRLDLDDURDUUDRDRRLDRLULDRLURUUUDDRLLLDDLDURLLLLDRDLDRRUDULURRLULRDRLLUULLRLRDRLLULUURRUDRUDDDLLDURURLURRRDLLDRDLUDRULULULRLDLRRRUUDLULDURLRDRLULRUUURRDDLRUURUDRURUDURURDD',
+'DURRDLLLDDLLDLLRLULULLRDLDRRDDRDLRULURRDUUDDRLLDDLDRRLRDUDRULDLRURDUUDRDDLLDRRDRUDUDULLDDDDLDRRRLRLRDRDLURRDDLDDDUUDRDRLLLDLUDDDLUULRDRLLLRLLUULUDDDRLDUUUURULRDDURRDRLUURLUDRLRLLLDDLRDDUULRRRRURDLDDDRLDLDRRLLDRDDUDDUURDLDUUDRDLDLDDULULUDDLRDDRLRLDDLUDLLDRLUDUDDRULLRLDLLRULRUURDDRDRDRURDRRLRDLLUDDRRDRRLDDULLLDLUDRRUDLDULDRURRDURLURRLDLRDLRUDLULUDDRULRLLDUURULURULURRLURRUULRULRRRLRDLULRLRLUDURDDRUUURDRLLRRRDDLDRRRULLDLRDRULDRRLRRDLUDDRDDDUUURRLULLDRRUULULLRRRRLDDRDDLUURLLUDLLDUDLULUULUDLLUUURRRUDDDRLLLRDRUUDUUURDRULURRLRDLLUURLRDURULDRRUDURRDDLDRLDRUUDRLLUDLRRU'];
+
+    // Linked structure for following a step
+    const stepMapper = {
+                                             '1': {value: 1,},
+                          '2': {value: 2,},  '3': {value: 3,},  '4': {value: 4,},
+        '5': {value: 5,}, '6': {value: 6,},  '7': {value: 7,},  '8': {value: 8,}, '9': {value: 9,},
+                          'A': {value: 'A',},'B': {value: 'B',},'C': {value: 'C',},
+                                             'D': {value: 'D',},
+    };
+    // Reference adjacent positions; in case of a border, return itself
+    stepMapper['1']['U'] = stepMapper['1'];
+    stepMapper['1']['R'] = stepMapper['1'];
+    stepMapper['1']['D'] = stepMapper['3'];
+    stepMapper['1']['L'] = stepMapper['1'];
+
+    stepMapper['2']['U'] = stepMapper['2'];
+    stepMapper['2']['R'] = stepMapper['3'];
+    stepMapper['2']['D'] = stepMapper['6'];
+    stepMapper['2']['L'] = stepMapper['2'];
+
+    stepMapper['3']['U'] = stepMapper['1'];
+    stepMapper['3']['R'] = stepMapper['4'];
+    stepMapper['3']['D'] = stepMapper['7'];
+    stepMapper['3']['L'] = stepMapper['2'];
+
+    stepMapper['4']['U'] = stepMapper['4'];
+    stepMapper['4']['R'] = stepMapper['4'];
+    stepMapper['4']['D'] = stepMapper['8'];
+    stepMapper['4']['L'] = stepMapper['3'];
+
+    stepMapper['5']['U'] = stepMapper['5'];
+    stepMapper['5']['R'] = stepMapper['6'];
+    stepMapper['5']['D'] = stepMapper['5'];
+    stepMapper['5']['L'] = stepMapper['5'];
+
+    stepMapper['6']['U'] = stepMapper['2'];
+    stepMapper['6']['R'] = stepMapper['7'];
+    stepMapper['6']['D'] = stepMapper['A'];
+    stepMapper['6']['L'] = stepMapper['5'];
+
+    stepMapper['7']['U'] = stepMapper['3'];
+    stepMapper['7']['R'] = stepMapper['8'];
+    stepMapper['7']['D'] = stepMapper['B'];
+    stepMapper['7']['L'] = stepMapper['6'];
+
+    stepMapper['8']['U'] = stepMapper['4'];
+    stepMapper['8']['R'] = stepMapper['9'];
+    stepMapper['8']['D'] = stepMapper['C'];
+    stepMapper['8']['L'] = stepMapper['7'];
+
+    stepMapper['9']['U'] = stepMapper['9'];
+    stepMapper['9']['R'] = stepMapper['9'];
+    stepMapper['9']['D'] = stepMapper['9'];
+    stepMapper['9']['L'] = stepMapper['8'];
+
+    stepMapper['A']['U'] = stepMapper['6'];
+    stepMapper['A']['R'] = stepMapper['B'];
+    stepMapper['A']['D'] = stepMapper['A'];
+    stepMapper['A']['L'] = stepMapper['A'];
+
+    stepMapper['B']['U'] = stepMapper['7'];
+    stepMapper['B']['R'] = stepMapper['C'];
+    stepMapper['B']['D'] = stepMapper['D'];
+    stepMapper['B']['L'] = stepMapper['A'];
+
+    stepMapper['C']['U'] = stepMapper['8'];
+    stepMapper['C']['R'] = stepMapper['C'];
+    stepMapper['C']['D'] = stepMapper['C'];
+    stepMapper['C']['L'] = stepMapper['B'];
+
+    stepMapper['D']['U'] = stepMapper['B'];
+    stepMapper['D']['R'] = stepMapper['D'];
+    stepMapper['D']['D'] = stepMapper['D'];
+    stepMapper['D']['L'] = stepMapper['D'];
+
+    let position = stepMapper['5'];
+
+    let numberSequence = '';
+
+    input.forEach(numberSteps => {
+        numberSteps.split('').forEach(direction => {
+            position = position[direction];
+        });
+        console.log(position.value);
+        numberSequence += position.value;
+    });
+    console.log('Code: ', numberSequence);
+</script>

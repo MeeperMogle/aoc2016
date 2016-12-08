@@ -57,5 +57,16 @@
     stepMapper['9']['D'] = stepMapper['9'];
     stepMapper['9']['L'] = stepMapper['8'];
 
-    const position = stepMapper['5'];
+    let position = stepMapper['5'];
+
+    let numberSequence = '';
+
+    input.forEach(numberSteps => {
+        numberSteps.split('').forEach(direction => {
+            position = position[direction];
+        });
+        console.log(position.value);
+        numberSequence += position.value;
+    });
+    console.log('Code: ', numberSequence);
 </script>

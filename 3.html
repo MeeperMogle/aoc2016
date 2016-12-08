@@ -12,5 +12,20 @@
             validHorizontalTriangles++;
         }
     });
+
+    let validVerticalTriangles = 0;
+    for(let row = 0; row < input.length; row += 3) {
+        for(let column = 0; column < 3; column++) {
+            const first = parseInt(input[row].split(' ')[column]);
+            const second = parseInt(input[row+1].split(' ')[column]);
+            const third = parseInt(input[row+2].split(' ')[column]);
+
+            if (first + second > third && first + third > second && second + third > first) {
+                validVerticalTriangles++;
+            }
+        }
+    }
+
     console.log('Valid horizontal:', validHorizontalTriangles);
+    console.log('Valid vertical:', validVerticalTriangles);
 </script>

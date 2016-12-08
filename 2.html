@@ -11,62 +11,50 @@
         '4': {value: 4,}, '5': {value: 5,}, '6': {value: 6,},
         '7': {value: 7,}, '8': {value: 8,}, '9': {value: 9,},
     };
+    // U = <4 ? samma : -3 X
+    // D = >6 ? samma : +3 X
+    // R = %3 ? samma : +1
+    // L = !%2 && !%3 ? samma : -1
+
     // Reference adjacent positions; in case of a border, return itself
-    stepMapper['1']['U'] = stepMapper['1'];
-    stepMapper['1']['R'] = stepMapper['2'];
-    stepMapper['1']['D'] = stepMapper['4'];
-    stepMapper['1']['L'] = stepMapper['1'];
+    Object.keys(stepMapper).forEach(key => {
+        const numericKey = parseInt(key);
 
-    stepMapper['2']['U'] = stepMapper['2'];
-    stepMapper['2']['R'] = stepMapper['3'];
-    stepMapper['2']['D'] = stepMapper['5'];
-    stepMapper['2']['L'] = stepMapper['1'];
+        // Stepping up, if lower than 4, means it's top row (itself)
+        // If not less than 4, move up exactly one column by subtracting 3
+        stepMapper[key]['U'] = numericKey < 4 ? stepMapper[key] : stepMapper[(numericKey - 3).toString()];
 
-    stepMapper['3']['U'] = stepMapper['3'];
-    stepMapper['3']['R'] = stepMapper['3'];
-    stepMapper['3']['D'] = stepMapper['6'];
-    stepMapper['3']['L'] = stepMapper['2'];
+        // Stepping down, if higher than 6, means it's the bottom row (itself)
+        // If not higher than 6, move down exactly one column by adding 3
+        stepMapper[key]['D'] = numericKey > 6 ? stepMapper[key] : stepMapper[(numericKey + 3).toString()];
 
-    stepMapper['4']['U'] = stepMapper['1'];
-    stepMapper['4']['R'] = stepMapper['5'];
-    stepMapper['4']['D'] = stepMapper['7'];
-    stepMapper['4']['L'] = stepMapper['4'];
+        // Stepping right, if modulo 3 is 0 it's at the right edge (itself)
+        // If not, move right by adding 1
+        stepMapper[key]['R'] = numericKey % 3 === 0 ? stepMapper[key] : stepMapper[(numericKey + 1).toString()];
 
-    stepMapper['5']['U'] = stepMapper['2'];
-    stepMapper['5']['R'] = stepMapper['6'];
-    stepMapper['5']['D'] = stepMapper['8'];
-    stepMapper['5']['L'] = stepMapper['4'];
+        // Stepping left, if not even and not divisible by 3 it's at the left edge (itself)
+        // If not, move left by subtracting 1
+        stepMapper[key]['L'] = numericKey % 2 !== 0 && numericKey % 3 !== 0 ? stepMapper[key] : stepMapper[(numericKey - 1).toString()];
+    });
 
-    stepMapper['6']['U'] = stepMapper['3'];
-    stepMapper['6']['R'] = stepMapper['6'];
-    stepMapper['6']['D'] = stepMapper['9'];
-    stepMapper['6']['L'] = stepMapper['5'];
-
-    stepMapper['7']['U'] = stepMapper['4'];
-    stepMapper['7']['R'] = stepMapper['8'];
-    stepMapper['7']['D'] = stepMapper['7'];
-    stepMapper['7']['L'] = stepMapper['7'];
-
-    stepMapper['8']['U'] = stepMapper['5'];
-    stepMapper['8']['R'] = stepMapper['9'];
-    stepMapper['8']['D'] = stepMapper['8'];
-    stepMapper['8']['L'] = stepMapper['7'];
-
-    stepMapper['9']['U'] = stepMapper['6'];
-    stepMapper['9']['R'] = stepMapper['9'];
-    stepMapper['9']['D'] = stepMapper['9'];
-    stepMapper['9']['L'] = stepMapper['8'];
-
+    // Start at 5, as per the instructions
     let position = stepMapper['5'];
 
+    // Store sequence of numbers one ends up on
     let numberSequence = '';
 
+    // For each string of steps
     input.forEach(numberSteps => {
+        // for each step
         numberSteps.split('').forEach(direction => {
+            // move position in that direction
             position = position[direction];
         });
+        // Print final number, add to number sequence
         console.log(position.value);
         numberSequence += position.value;
     });
-    console.log('Code: ', numberSequence);
+    // Answer added after the fact for easy verification on refactoring
+    console.log('Code (78293):', numberSequence);
+    document.write('Code (78293): ' + numberSequence);
 </script>

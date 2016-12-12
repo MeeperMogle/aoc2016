@@ -1,0 +1,78 @@
+<script>
+    const input = [];
+    const input2 = ['rect 3x2','rotate column x=1 by 1','rotate row y=0 by 4','rotate column x=1 by 1'];
+
+    const screen = [];
+
+    const screen2 = [
+        ['.', '.', '.', '.', '.', '.', '.'],
+        ['.', '.', '.', '.', '.', '.', '.'],
+        ['.', '.', '.', '.', '.', '.', '.'],
+    ];
+
+    const inputToUse = input2;
+    const screenToUse = screen2;
+
+    function printDisplay() {
+        // Print out the display on the screen (console)
+        let screenDisplay = '';
+        for(let col = 0; col < screenToUse.length; col++) {
+            for(let row = 0; row < screenToUse[0].length; row++) {
+                screenDisplay += screenToUse[col][row];
+            }
+            screenDisplay += '\n';
+        }
+        console.log(screenDisplay);
+    }
+
+    // For all of the rows in the columns, starting from 0,0, turn it on (#)
+    function rect(x, y, screen) {
+        for(let col = 0; col < x; col++) {
+            for(let row = 0; row < y; row++) {
+                screen[row][col] = '#';
+            }
+        }
+    }
+
+    // Shift down the column
+    function column(x, steps, screen) {
+        for(let step = 0; step < steps; step++) {
+            const farBottom = screen[screen.length - 1][x];
+            for(let row = screen.length - 1; row > 0; row--) {
+                screen[row][x] = screen[row-1][x];
+            }
+            screen[0][x] = farBottom;
+        }
+    }
+
+    printDisplay();
+    inputToUse.forEach(command => {
+        const words = command.split(' ');
+        const commandType = words[0];
+
+        switch(commandType) {
+            case 'rect':
+                const x = words[1].split('x')[0];
+                const y = words[1].split('x')[1];
+                rect(x, y, screenToUse);
+                break;
+            case 'rotate':
+                const direction = words[1];
+                const position = words['2'].split('=')[1];
+                const steps = words[words.length - 1];
+
+                switch(direction) {
+                    case 'column':
+                        column(position, steps, screenToUse);
+                        break;
+                    case 'row':
+
+                        break;
+                }
+
+                break;
+        }
+        console.log('command:', command);
+        printDisplay();
+    });
+</script>

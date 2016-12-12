@@ -30,12 +30,16 @@
     inputToUse.forEach(ip => {
         // Find contents of brackets, as well as before and after brackets
         const insideBrackets = ip.match(/\[[^\]]+/g);
+        const ipWithoutBrackets = '';
 
         // Check all brackets for an ABBA
         let abbaBracket = false;
         insideBrackets.forEach(inBracket => {
             const characters = inBracket.substring(1);
             abbaBracket = abbaBracket || containsAbba(characters);
+
+            // Remove current bracket to have fewer characters to check against later
+            ip = ip.replace(characters, '');
         });
 
         // TLS is enabled if there if there is not an ABBA inside brackets... but there IS an ABBA.

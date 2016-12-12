@@ -3,6 +3,59 @@
 
     let realRoomNumbersTotal = 0;
 
+
+    // Shift single character
+    // Rules: To the right, a-z, then back to a-z...
+    // Also, - becomes a space.
+    function shift(character, rightShifts) {
+        // Count shifts left, and store current character code
+        let shiftsLeft = rightShifts;
+        let targetCode = character.charCodeAt(0);
+
+        // Some points of interest
+        const zCode = 'z'.charCodeAt(0);
+        const aCode = 'a'.charCodeAt(0);
+        const dashCode = '-'.charCodeAt(0);
+
+        // If it's a dash, just return a space
+        if (targetCode === dashCode) {
+            return ' ';
+        }
+
+        // In all other cases, go on until there are no more shifts needed
+        while(shiftsLeft > 0) {
+            // Need to shift past the 'z' position (character code)?
+            if (shiftsLeft > (zCode - targetCode)) {
+                // Decrement "steps left" by the difference, and reset the current char-code to 'a'
+                shiftsLeft -= (zCode - targetCode) + 1;
+                targetCode = aCode;
+            }
+            // Won't go past 'z'?
+            else {
+                // Just add the amount left to the char code and we're done.
+                targetCode += shiftsLeft;
+                shiftsLeft = 0;
+            }
+        }
+        // Return the character corresponding to the final char code number
+        return String.fromCharCode(targetCode);
+    }
+
+    // To decrypt a name,
+    function decryptName(str, rightShifts) {
+        // take the lower-case version.
+        const lowerCased = str.toLowerCase();
+        let decryptedName = '';
+
+        // For every character, append it's decrypted version to a string
+        lowerCased.split('').forEach(character => {
+            decryptedName += shift(character, rightShifts);
+        });
+
+        // Return the built string
+        return decryptedName;
+    }
+
     input.forEach(roomLine => {
         // Assume that everything is a decoy
         let decoy = true;
@@ -10,8 +63,10 @@
         // Fetch strings of checksum and the encrypted name,
         // as well as integer for room number
         const checksum = roomLine.match(/\[.+\]/)[0].substring(1, roomLine.match(/\[.+\]/)[0].length-1);
-        let encryptedName = roomLine.match(/.+(?=-\d+)/)[0].replace(/-/g, '');
+        const encryptedName = roomLine.match(/.+(?=-\d+)/)[0];
         const roomNumber = parseInt(roomLine.match(/\d+/)[0]);
+
+        let encryptedNameCopy = encryptedName.replace(/-/g, '');
 
         // Structure to count instances of each character and easily compare
         let checksumCharCounters = [];
@@ -30,7 +85,7 @@
 
             // Remove all instances of this character; all that'll be left are non-top-5 which will then be checked
             const re = new RegExp(currentChar, 'ig');
-            encryptedName = encryptedName.replace(re, '');
+            encryptedNameCopy = encryptedNameCopy.replace(re, '');
 
             // No backwards-checks if this is the first iteration
             if (i === 0) {
@@ -53,7 +108,7 @@
                 const highestAlphapetChar = checksumCharCounters[i].character;
 
                 // No more characters to check, we reached the end and thus must be a real room.
-                if (encryptedName.length === encryptedName.split('-').length - 1) {
+                if (encryptedNameCopy.length === encryptedNameCopy.split('-').length - 1) {
                     decoy = false;
                     break;
                 }
@@ -63,7 +118,7 @@
                     const leftCounters = {};
 
                     // Count each instance of every character, storing the character as a key
-                    encryptedName.split('').forEach(characterLeft => {
+                    encryptedNameCopy.split('').forEach(characterLeft => {
                         if (!leftCounters[characterLeft]) {
                             leftCounters[characterLeft] = 0;
                         }
@@ -85,8 +140,15 @@
         // Add any real rooms to the total
         if (!decoy) {
             realRoomNumbersTotal += roomNumber;
+
+            // Decrypt the name of this (real) room
+            const currentDecryptedName = decryptName(encryptedName, roomNumber) + ' (' + roomNumber + ')';
+
+            // If it has the word "object" in it, it might be the North Pole Object room for storage purposes
+            if (currentDecryptedName.includes('object')) {
+                console.log('Object storage: ', currentDecryptedName);
+            }
         }
     });
-    // 185,371 is the correct one!
     console.log('realRoomNumbersTotal:', realRoomNumbersTotal);
 </script>

@@ -45,6 +45,19 @@
         }
     }
 
+    // Shift along the row
+    function row(y, steps, screen) {
+        const farRight = screen[y][screen[y].length - 1];
+
+        for(let step = 0; step < steps; step++) {
+            for(let col = screen[y].length - 1; col > 0; col--) {
+                screen[y][col] = screen[y][col - 1];
+            }
+
+            screen[y][0] = farRight;
+        }
+    }
+
     printDisplay();
     inputToUse.forEach(command => {
         const words = command.split(' ');
@@ -66,7 +79,7 @@
                         column(position, steps, screenToUse);
                         break;
                     case 'row':
-
+                        row(position, steps, screenToUse);
                         break;
                 }
 

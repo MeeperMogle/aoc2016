@@ -50,29 +50,39 @@
 
     // Shift down the column
     function column(x, steps, screen) {
+        // Perform the actions as many times as specified
         for(let step = 0; step < steps; step++) {
+            // Get the character currently at the very bottom
             const farBottom = screen[screen.length - 1][x];
+
+            // For every row, from the bottom, except the top, copy the character from one above
             for(let row = screen.length - 1; row > 0; row--) {
                 screen[row][x] = screen[row-1][x];
             }
+            // Put the character from the bottom on the top
             screen[0][x] = farBottom;
         }
     }
 
     // Shift along the row
     function row(y, steps, screen) {
+        // Perform the actions as many times as specified
         for(let step = 0; step < steps; step++) {
+            // Get the character currently at the far right border
             const farRight = screen[y][screen[y].length - 1];
+
+            // For every column, from the right, except the far-left one, copy the character to the left
             for(let col = screen[y].length - 1; col > 0; col--) {
                 screen[y][col] = screen[y][col - 1];
             }
-
+            // Put the character from the far right on the far left
             screen[y][0] = farRight;
         }
     }
 
     printDisplay();
     inputToUse.forEach(command => {
+        // Split each input
         const words = command.split(' ');
         const commandType = words[0];
 
@@ -101,6 +111,4 @@
         console.log('command:', command);
         printDisplay();
     });
-
-    // 22 too low...
 </script>

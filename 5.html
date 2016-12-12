@@ -1,31 +1,38 @@
 <script src="http://www.myersdaily.org/joseph/javascript/md5.js"></script>
 <script>
     const input = "ugkcyxxp";
+
+    // Incrementing integer
     let integer = 0;
+
+    // Empty string for first password, array-construct for second; filled out one character at a time
     let password = '';
     let secondPassword = ['-', '-', '-', '-', '-', '-', '-', '-'];
 
+    // Keep track of amount of characters in second password set; that takes longer
     let secondPasswordCharactersSet = 0;
 
     while(password.length < 8 || secondPasswordCharactersSet < 8) {
         const currentMd5 = md5(input + '' + integer);
         const currentFirstFive = currentMd5.slice(0, 5);
 
+        // Hashes of interest always start with five 0's
         if (currentFirstFive === '00000') {
+            // Append to first password until that's done
             if (password.length < 8) {
                 password += currentMd5.charAt(5);
             }
 
-            try {
-                const secondPasswordCharacterPosition = currentMd5.charAt(5);
-                if (secondPasswordCharacterPosition < 8) {
-                    if (secondPassword[secondPasswordCharacterPosition] === '-') {
-                        secondPasswordCharactersSet++;
-                        secondPassword[secondPasswordCharacterPosition] = currentMd5.charAt(6);
-                        console.log(secondPassword.join(''));
-                    }
+            // Use the 6th character as an index if it's valid for the password (0-7)
+            const secondPasswordCharacterPosition = currentMd5.charAt(5);
+            if (secondPasswordCharacterPosition < 8) {
+                // If the index has not yet been set, set it and print the second password as it looks right now
+                if (secondPassword[secondPasswordCharacterPosition] === '-') {
+                    secondPasswordCharactersSet++;
+                    secondPassword[secondPasswordCharacterPosition] = currentMd5.charAt(6);
+                    console.log(secondPassword.join(''));
                 }
-            } finally {}
+            }
         }
         integer++;
     }

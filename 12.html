@@ -1,0 +1,44 @@
+<script>
+    const input = [];
+
+    const input2 = ['cpy 41 a','inc a','inc a','dec a','jnz a 2','dec a'];
+
+    const inputToUse = input2;
+
+    const memory = {};
+
+    for(let i=0; i<inputToUse.length; i++) {
+        const command = inputToUse[i];
+
+        const arguments = command.split(' ');
+        const commandType = arguments[0];
+
+        console.log('arguments:', arguments);
+
+        switch(commandType) {
+            case 'cpy':
+                // Copy into arg 2... if arg 1 is a number, arg 1... else it's a memory location; that location's value
+                memory[arguments[2]] = Number.isInteger(parseInt(arguments[1])) ? parseInt(arguments[1]) : parseInt(memory[arguments[1]]);
+                break;
+            case 'inc':
+                // Increment by 1 if available, otherwise initiate to 1
+                memory[arguments[1]] = memory[arguments[1]] ? memory[arguments[1]] + 1 : 1;
+                break;
+            case 'dec':
+                // Decrement by 1 if available, otherwise initiate to -1
+                memory[arguments[1]] = memory[arguments[1]] ? memory[arguments[1]] - 1 : -1;
+                break;
+            case 'jnz':
+                // If arg 1 is a number and is not 0, OR is a memory address which is not 0
+                if (Number.isInteger(parseInt(arguments[1])) && parseInt(arguments[1]) !== 0 ||
+                   parseInt(memory[arguments[1]]) !== 0) {
+                    // jump the given steps in the instruction queue
+                    i += arguments[2];
+                }
+                break;
+        }
+    }
+
+    // 46 is too low
+    console.log('memory:', memory);
+</script>

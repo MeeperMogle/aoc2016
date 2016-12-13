@@ -1,32 +1,66 @@
 <script>
     const input = [];
-    const input2 = ['ADVENT','A(1x5)BC','(3x3)XYZ','A(2x2)BCD(2x2)EFG','(6x1)(1x3)A','X(8x2)(3x3)ABCY'];
+    const input2 = [
+        'ADVENT',
+        'A(1x5)BC',
+        '(3x3)XYZ',
+        'A(2x2)BCD(2x2)EFG',
+        '(6x1)(1x3)A',
+        'X(8x2)(3x3)ABCY',
+    ];
 
     const inputToUse = input2;
 
     function decompress(text) {
         console.group(text);
 
-        // decompressed = '';
+        let decompressed = '';
         // Loop
+        for(let index = 0; index < text.length; ) {
+            const startOfParentheses = text.indexOf('(', index);
+            console.log('startOfParentheses:', startOfParentheses);
 
-            // startOfParentheses
-            // === current index?
-                // store: endOfParentheses, parenthesesContents
-                // extract: AxB
-                // copy: substr(endOfParentheses, A)
-                // put   ^ on decompressed B times
-                // move current index to endOfParentheses + A
+            if (startOfParentheses === index) {
+                const endOfParentheses = parseInt(text.indexOf(')', startOfParentheses));
+                const parenthesesContents = text.substring(startOfParentheses, endOfParentheses + 1);
 
-            // not current index?
-                // store: startOfParentheses (if -1 = .length), textUntilThen
-                // put textUntilThen on decompressed
-                // move current index to startOfParentheses
+                console.log('endOfParentheses:', endOfParentheses);
+                console.log('parenthesesContents:', parenthesesContents);
+
+                const characterCount = parseInt(parenthesesContents.match(/\d+(?=x)/)[0]);
+                const repetitions = parseInt(parenthesesContents.match(/\d+(?=\))/)[0]);
+
+                console.log('characterCount:', characterCount);
+                console.log('repetitions:', repetitions);
+
+                const repetitionText = text.substr(endOfParentheses + 1, characterCount);
+                console.log('repetitionText:', repetitionText);
+
+                let repeated = 0;
+                while(repeated < repetitions) {
+                    decompressed += repetitionText;
+                    repeated++;
+                }
+
+                index = endOfParentheses + 1 + characterCount;
+                console.log('index:', index);
+            } else {
+                const nextIndex = startOfParentheses === -1 ? text.length : startOfParentheses;
+                const textUntilNext = text.substring(index, nextIndex);
+
+                console.log('nextIndex:', nextIndex);
+                console.log('textUntilNext:', textUntilNext);
+
+                decompressed += textUntilNext;
+
+                index = nextIndex;
+            }
+        }
+        console.log('decompressed (len): ' + decompressed + ' (' + decompressed.length + ')');
+        console.groupEnd();
     }
 
-    decompress(inputToUse[0]);
-
-//    inputToUse.forEach(compressedWord => {
-//        decompress(compressedWord);
-//    });
+    inputToUse.forEach(compressedWord => {
+        decompress(compressedWord);
+    });
 </script>

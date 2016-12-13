@@ -5,43 +5,28 @@
     const inputToUse = input2;
 
     function decompress(text) {
-        console.log('text:', text);
-        let decompressedText = text.substring(0, text.indexOf('('));
+        console.group(text);
 
-        for(let i=text.indexOf('('); i<text.length;) {
-            if (!text[i]) {
-                break;
-            }
+        // decompressed = '';
+        // Loop
 
-            const indexIncludingEndParentheses = text.indexOf(')', i) + 1;
-            const thisParentheses = text.substring(i, indexIncludingEndParentheses);
-            console.log('thisParentheses:', thisParentheses);
+            // startOfParentheses
+            // === current index?
+                // store: endOfParentheses, parenthesesContents
+                // extract: AxB
+                // copy: substr(endOfParentheses, A)
+                // put   ^ on decompressed B times
+                // move current index to endOfParentheses + A
 
-            const charactersForward = thisParentheses.match(/\d+(?=x)/)[0];
-            const insertTimes = thisParentheses.match(/\d+(?=\))/)[0];
-
-            const copiedCharacters = text.substr(indexIncludingEndParentheses, charactersForward);
-
-            for(let j=0; j<insertTimes; j++) {
-                decompressedText += copiedCharacters;
-            }
-
-            if (text.indexOf('(', i + 1) === -1) {
-                // Append the rest of the string
-                console.log('i:', i);
-                console.log('charactersForward:', charactersForward);
-                decompressedText += text.substring(text.indexOf(")", i) + 1 + parseInt(charactersForward));
-            }
-
-            i = text.indexOf('(', i + 1);
-        }
-
-        decompressedText = decompressedText || text;
-        console.log('decompressedText:', decompressedText);
-        console.log('');
+            // not current index?
+                // store: startOfParentheses (if -1 = .length), textUntilThen
+                // put textUntilThen on decompressed
+                // move current index to startOfParentheses
     }
 
-    inputToUse.forEach(compressedWord => {
-        decompress(compressedWord);
-    });
+    decompress(inputToUse[0]);
+
+//    inputToUse.forEach(compressedWord => {
+//        decompress(compressedWord);
+//    });
 </script>

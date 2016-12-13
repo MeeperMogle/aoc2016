@@ -10,7 +10,9 @@
         'X(8x2)(3x3)ABCY',
     ];
 
-    const inputToUse = input;
+    const input3 = ['(3x3)XYZ','X(8x2)(3x3)ABCY','(27x12)(20x12)(13x14)(7x10)(1x12)A','(25x3)(3x3)ABC(2x3)XY(5x2)PQRSTX(18x9)(3x2)TWO(5x7)SEVEN'];
+
+    const inputToUse = input2;
 
     function decompress(text) {
         console.group(text);
@@ -43,7 +45,7 @@
                 console.log('repetitions:', repetitions);
 
                 // Copy the Amount number of characters, starting right after the parentheses
-                const repetitionText = text.substr(endOfParentheses + 1, characterCount);
+                const repetitionText = decompress(text.substr(endOfParentheses + 1, characterCount));
                 console.log('repetitionText:', repetitionText);
 
                 // Append the characters onto the decrypted text Repetitions times
@@ -74,11 +76,15 @@
                 index = nextIndex;
             }
         }
-        console.log('decompressed (len): ' + decompressed + ' (' + decompressed.length + ')');
         console.groupEnd();
+
+        return decompressed;
     }
 
+    // 26825370 too low...?!
     inputToUse.forEach(compressedWord => {
-        decompress(compressedWord);
+        const decompressedLength = decompress(compressedWord).length;
+        console.log('word (decompressed len): ' + compressedWord + ' (' + decompressedLength + ')');
+        document.write('word (decompressed len): ' + compressedWord + ' (' + decompressedLength + ')<br>');
     });
 </script>

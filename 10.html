@@ -5,5 +5,49 @@
 
     const inputToUse = input2;
 
+    const locations = {};
+    locations['bot'] = {};
+    locations['output'] = {};
 
+    // To avoid going over the value-ones a second time
+    const withoutValueStatements = [];
+
+    // Assign all default values to bots
+    inputToUse.forEach(statement => {
+        // Handle 'value'-statements this first iteration
+        if (statement.startsWith('value')) {
+            const words = statement.split(' ');
+
+            const value = parseInt(words[1]);
+            const toBot = parseInt(words[words.length - 1]);
+
+            if (!locations['bot'][toBot]) {
+                locations['bot'][toBot] = { valueA: value, valueB: 0 };
+            } else {
+                locations['bot'][toBot].valueB = value;
+            }
+        }
+        // Store not-'value'-statements aside, for second iteration
+        else {
+            withoutValueStatements.push(statement);
+        }
+    });
+
+    // In second iteration, start passing the values around
+    withoutValueStatements.forEach(passingStatement => {
+        console.log('passingStatement:', passingStatement);
+        const words = passingStatement.split(' ');
+
+        const bot = parseInt(words[1]);
+        const lowToType = words[5];
+        const lowToNum = parseInt(words[6]);
+        const highToType = words[10];
+        const highToNum = parseInt(words[11]);
+
+        if (!locations[lowToType][lowToNum]) {
+            locations[lowToType][lowToNum] = { valueA: 0, valueB: 0 };
+        }
+    });
+
+    console.log('locations:', locations);
 </script>

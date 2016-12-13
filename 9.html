@@ -1,0 +1,47 @@
+<script>
+    const input = [];
+    const input2 = ['ADVENT','A(1x5)BC','(3x3)XYZ','A(2x2)BCD(2x2)EFG','(6x1)(1x3)A','X(8x2)(3x3)ABCY'];
+
+    const inputToUse = input2;
+
+    function decompress(text) {
+        console.log('text:', text);
+        let decompressedText = text.substring(0, text.indexOf('('));
+
+        for(let i=text.indexOf('('); i<text.length;) {
+            if (!text[i]) {
+                break;
+            }
+
+            const indexIncludingEndParentheses = text.indexOf(')', i) + 1;
+            const thisParentheses = text.substring(i, indexIncludingEndParentheses);
+            console.log('thisParentheses:', thisParentheses);
+
+            const charactersForward = thisParentheses.match(/\d+(?=x)/)[0];
+            const insertTimes = thisParentheses.match(/\d+(?=\))/)[0];
+
+            const copiedCharacters = text.substr(indexIncludingEndParentheses, charactersForward);
+
+            for(let j=0; j<insertTimes; j++) {
+                decompressedText += copiedCharacters;
+            }
+
+            if (text.indexOf('(', i + 1) === -1) {
+                // Append the rest of the string
+                console.log('i:', i);
+                console.log('charactersForward:', charactersForward);
+                decompressedText += text.substring(text.indexOf(")", i) + 1 + parseInt(charactersForward));
+            }
+
+            i = text.indexOf('(', i + 1);
+        }
+
+        decompressedText = decompressedText || text;
+        console.log('decompressedText:', decompressedText);
+        console.log('');
+    }
+
+    inputToUse.forEach(compressedWord => {
+        decompress(compressedWord);
+    });
+</script>

@@ -3,7 +3,7 @@
 
     const input2 = ['cpy 41 a', 'inc a', 'inc a', 'dec a', 'jnz a 2', 'dec a'];
 
-    const inputToUse = input2;
+    const inputToUse = input;
 
     const memory = {
         a: 0,
@@ -11,6 +11,11 @@
         c: 0,
         d: 0,
     };
+
+    // 12.2?
+    if (false) {
+        memory.c = 1;
+    }
 
     // If input is not number, translate to number found in that MEMORY ADDRESS instead
     function getRealNumber(number) {
@@ -40,20 +45,20 @@
     function jnz(x, relativeSteps, currentIndex) {
         // Only manipulate if x !== 0
         if (getRealNumber(x) !== 0) {
-            return currentIndex += relativeSteps;
+            return parseInt(currentIndex += relativeSteps);
         } else {
-            return currentIndex;
+            return parseInt(currentIndex);
         }
     }
 
     // Note: In the loop, jnz doesn't need i++
 
     // 46 is too low
-    for(let i=0; i<inputToUse.length; ) {
+    for(let i=0, steps = 0; i<inputToUse.length && steps < 500000000; steps++) {
         const instruction = inputToUse[i];
         const arguments = instruction.split(' ');
         const operationType = arguments[0];
-        console.log('arguments:', arguments);
+//        console.log('arguments:', arguments);
 
         switch (operationType) {
             case 'cpy':
@@ -69,11 +74,13 @@
                 i++;
                 break;
             case 'jnz':
-                i = jnz(arguments[1], getRealNumber(arguments[2]), i);
+                const newIndex = jnz(arguments[1], getRealNumber(arguments[2]), i);
+                i = newIndex === i ? i + 1 : newIndex;
                 break;
         }
 
-        console.log('memory:', memory);
+//        console.log('memory:', memory);
     }
-
+    console.log('memory:', memory);
+    console.log('done');
 </script>

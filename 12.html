@@ -1,39 +1,45 @@
 <script>
-    const input = [];
+    const input = ['cpy 1 a','cpy 1 b','cpy 26 d','jnz c 2','jnz 1 5','cpy 7 c','inc d','dec c','jnz c -2','cpy a c','inc a','dec b','jnz b -2','cpy c b','dec d','jnz d -6','cpy 18 c','cpy 11 d','inc a','dec d','jnz d -2','dec c','jnz c -5'];
 
     const input2 = ['cpy 41 a','inc a','inc a','dec a','jnz a 2','dec a'];
 
-    const inputToUse = input2;
+    const inputToUse = input;
 
-    const memory = {};
+    const memory = { a: 0, b: 0, c: 0, d:0, };
 
-    for(let i=0; i<inputToUse.length; i++) {
+    for(let i=0, spins=0; i<inputToUse.length && spins < 50; spins++) {
         const command = inputToUse[i];
 
         const arguments = command.split(' ');
         const commandType = arguments[0];
 
+        console.log('memory:', memory);
         console.log('arguments:', arguments);
 
         switch(commandType) {
             case 'cpy':
                 // Copy into arg 2... if arg 1 is a number, arg 1... else it's a memory location; that location's value
                 memory[arguments[2]] = Number.isInteger(parseInt(arguments[1])) ? parseInt(arguments[1]) : parseInt(memory[arguments[1]]);
+                i++;
                 break;
             case 'inc':
                 // Increment by 1 if available, otherwise initiate to 1
-                memory[arguments[1]] = memory[arguments[1]] ? memory[arguments[1]] + 1 : 1;
+                memory[arguments[1]] = memory[arguments[1]] ? parseInt(memory[arguments[1]]) + 1 : 1;
+                i++;
                 break;
             case 'dec':
                 // Decrement by 1 if available, otherwise initiate to -1
-                memory[arguments[1]] = memory[arguments[1]] ? memory[arguments[1]] - 1 : -1;
+                memory[arguments[1]] = memory[arguments[1]] ? parseInt(memory[arguments[1]]) - 1 : -1;
+                i++;
                 break;
             case 'jnz':
                 // If arg 1 is a number and is not 0, OR is a memory address which is not 0
                 if (Number.isInteger(parseInt(arguments[1])) && parseInt(arguments[1]) !== 0 ||
                    parseInt(memory[arguments[1]]) !== 0) {
                     // jump the given steps in the instruction queue
-                    i += arguments[2];
+                    i += parseInt(arguments[2]);
+                } else {
+                    i++;
                 }
                 break;
         }

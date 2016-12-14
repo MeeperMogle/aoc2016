@@ -1,11 +1,16 @@
 <script>
-    const input = ['cpy 1 a','cpy 1 b','cpy 26 d','jnz c 2','jnz 1 5','cpy 7 c','inc d','dec c','jnz c -2','cpy a c','inc a','dec b','jnz b -2','cpy c b','dec d','jnz d -6','cpy 18 c','cpy 11 d','inc a','dec d','jnz d -2','dec c','jnz c -5'];
+    const input = ['cpy 1 a', 'cpy 1 b', 'cpy 26 d', 'jnz c 2', 'jnz 1 5', 'cpy 7 c', 'inc d', 'dec c', 'jnz c -2', 'cpy a c', 'inc a', 'dec b', 'jnz b -2', 'cpy c b', 'dec d', 'jnz d -6', 'cpy 18 c', 'cpy 11 d', 'inc a', 'dec d', 'jnz d -2', 'dec c', 'jnz c -5'];
 
-    const input2 = ['cpy 41 a','inc a','inc a','dec a','jnz a 2','dec a'];
+    const input2 = ['cpy 41 a', 'inc a', 'inc a', 'dec a', 'jnz a 2', 'dec a'];
 
-    const inputToUse = input;
+    const inputToUse = input2;
 
-    const memory = { a: 0, b: 0, c: 0, d: 0, };
+    const memory = {
+        a: 0,
+        b: 0,
+        c: 0,
+        d: 0,
+    };
 
     // If input is not number, translate to number found in that MEMORY ADDRESS instead
     function getRealNumber(number) {
@@ -44,5 +49,31 @@
     // Note: In the loop, jnz doesn't need i++
 
     // 46 is too low
-    console.log('memory:', memory);
+    for(let i=0; i<inputToUse.length; ) {
+        const instruction = inputToUse[i];
+        const arguments = instruction.split(' ');
+        const operationType = arguments[0];
+        console.log('arguments:', arguments);
+
+        switch (operationType) {
+            case 'cpy':
+                cpy(arguments[1], arguments[2]);
+                i++;
+                break;
+            case 'inc':
+                inc(arguments[1]);
+                i++;
+                break;
+            case 'dec':
+                dec(arguments[1]);
+                i++;
+                break;
+            case 'jnz':
+                i = jnz(arguments[1], getRealNumber(arguments[2]), i);
+                break;
+        }
+
+        console.log('memory:', memory);
+    }
+
 </script>

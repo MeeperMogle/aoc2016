@@ -10,7 +10,12 @@
     const positionOfHole = 0;
 
     function willGoThrough(disc, startingSecond) {
-        return (disc.positions - disc.startingPosition) === (startingSecond + disc.secondsToDisc);
+        const stepsToLastPosition = (disc.positions - 1) - disc.startingPosition;
+        const secondReachingDisc = parseInt(disc.secondsToDisc) + parseInt(startingSecond);
+        const positionAtStartingSecond = (disc.startingPosition + startingSecond) % disc.positions;
+        const positionAtReachingSecond = (positionAtStartingSecond + disc.secondsToDisc) % disc.positions;
+
+        return positionAtReachingSecond === positionOfHole;
     }
 
     inputToUse.forEach(discDescription => {
@@ -23,16 +28,21 @@
         const newDisc = { secondsToDisc, positions, startingPosition, };
         discs.push(newDisc);
     });
-    console.log('discs:', discs);
+//    console.log('discs:', discs);
 
-    let failed = false;
-    for(let i=0; i<discs.length; i++) {
-        if (!willGoThrough(discs[i], 0)) {
-            failed = true;
-            console.log(`Failed @${i}:`, discs[i]);
+    for(let startingSecond = 0; startingSecond < 500; startingSecond++) {
+        let failed = false;
+        for(let i=0; i<discs.length; i++) {
+            if (!willGoThrough(discs[i], startingSecond)) {
+                failed = true;
+                break;
+            } else {
+
+            }
+        }
+        if (!failed) {
+            console.log('You got it by starting at second ' + startingSecond);
             break;
-        } else {
-            console.log(`Went through @${i}:`, discs[i]);
         }
     }
 </script>

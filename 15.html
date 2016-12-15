@@ -1,0 +1,38 @@
+<script>
+    const input = [];
+
+    const input2 = ['Disc #1 has 5 positions; at time=0, it is at position 4.','Disc #2 has 2 positions; at time=0, it is at position 1.'];
+
+    const inputToUse = input2;
+
+    const discs = [];
+
+    const positionOfHole = 0;
+
+    function willGoThrough(disc, startingSecond) {
+        return (disc.positions - disc.startingPosition) === (startingSecond + disc.secondsToDisc);
+    }
+
+    inputToUse.forEach(discDescription => {
+        const words = discDescription.split(' ');
+
+        const secondsToDisc = parseInt(words[1].replace('#', ''));
+        const positions = parseInt(words[3]);
+        const startingPosition = parseInt(words[11].replace('.', ''));
+
+        const newDisc = { secondsToDisc, positions, startingPosition, };
+        discs.push(newDisc);
+    });
+    console.log('discs:', discs);
+
+    let failed = false;
+    for(let i=0; i<discs.length; i++) {
+        if (!willGoThrough(discs[i], 0)) {
+            failed = true;
+            console.log(`Failed @${i}:`, discs[i]);
+            break;
+        } else {
+            console.log(`Went through @${i}:`, discs[i]);
+        }
+    }
+</script>

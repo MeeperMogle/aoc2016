@@ -1,0 +1,17 @@
+<script>
+    const sampleInput = '111100001010';
+
+    const input2 = '';
+
+    const inputToUse = sampleInput;
+
+    function generateNext(str) {
+        const a = str;
+        let b = '';
+        a.split('').reverse().forEach(character => b += character === '1' ? '0' : '1');
+        console.log('b:', b);
+        return a + '0' + b;
+    }
+
+    console.log('generateNext(inputToUse):', generateNext(inputToUse));
+</script>

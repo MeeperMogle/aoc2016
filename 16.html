@@ -1,5 +1,5 @@
 <script>
-    const sampleInput = '111100001010';
+    const sampleInput = '10000';
 
     const input2 = '';
 
@@ -8,12 +8,34 @@
     function generateNext(str, requiredSize) {
         const a = str;
         let b = '';
+
+        // Reverse all characters; replace 1 with 0 and vice-versa
         a.split('').reverse().forEach(character => b += character === '1' ? '0' : '1');
 
+        // Put together a and b with a 0 in-between
         const next = a + '0' + b;
 
-        return next.length >= requiredSize ? next : generateNext(next, requiredSize);
+        // If it's big enough, return it (truncate overflowing data), if not use it as input for another iteration
+        return next.length >= requiredSize ? next.substr(0, requiredSize) : generateNext(next, requiredSize);
     }
 
-    console.log('generateNext(inputToUse):', generateNext(inputToUse, 100));
+    function checksum(data) {
+        // Checksum starts as empty
+        let check = '';
+
+        // Get all pairs of characters in the input data
+        const doubles = data.match(/.{1,2}/g);
+
+        // For each pair, if they are the same add a 1, else add a 0, to checksum
+        doubles.forEach(twoChars => {
+            check += twoChars[0] === twoChars[1] ? '1' : '0';
+        });
+
+        // Once the checksum-length is odd (uneven pairs), that's final
+        return check.length % 2 == 1 ? check : checksum(check);
+    }
+
+    const data = generateNext(inputToUse, 20);
+    console.log('data:', data);
+    console.log('checksum:', checksum(data));
 </script>

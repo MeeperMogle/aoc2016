@@ -5,13 +5,15 @@
 
     const inputToUse = sampleInput;
 
-    function generateNext(str) {
+    function generateNext(str, requiredSize) {
         const a = str;
         let b = '';
         a.split('').reverse().forEach(character => b += character === '1' ? '0' : '1');
-        console.log('b:', b);
-        return a + '0' + b;
+
+        const next = a + '0' + b;
+
+        return next.length >= requiredSize ? next : generateNext(next, requiredSize);
     }
 
-    console.log('generateNext(inputToUse):', generateNext(inputToUse));
+    console.log('generateNext(inputToUse):', generateNext(inputToUse, 100));
 </script>

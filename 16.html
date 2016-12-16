@@ -1,12 +1,14 @@
 <script>
     const sampleInput = '10000';
+    const lengthSample = 20;
 
-    const input2 = '';
+    const input1 = '11101000110010100';
+    const length1 = 272;
 
-    const inputToUse = sampleInput;
+    const input2 = '11101000110010100';
+    const length2 = 35651584;
 
-    function generateNext(str, requiredSize) {
-        const a = str;
+    function generateNext(a, requiredSize) {
         let b = '';
 
         // Reverse all characters; replace 1 with 0 and vice-versa
@@ -35,7 +37,15 @@
         return check.length % 2 == 1 ? check : checksum(check);
     }
 
-    const data = generateNext(inputToUse, 20);
-    console.log('data:', data);
-    console.log('checksum:', checksum(data));
+//    const sampleData = generateNext(sampleInput, lengthSample);
+//    console.log('sample data:', sampleData);
+//    console.log('sample checksum:', checksum(sampleData));
+//
+//    const oneData = generateNext(input1, length1);
+//    console.log('16.1 data:', oneData);
+//    console.log('16.1 checksum:', checksum(oneData));
+
+    const twoData = generateNext(input2, length2);
+//    console.log('16.2 data:', twoData);
+    console.log('16.2 checksum:', checksum(twoData));
 </script>

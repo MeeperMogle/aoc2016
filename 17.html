@@ -1,16 +1,20 @@
 <script src="http://www.myersdaily.org/joseph/javascript/md5.js"></script>
 <script>
-    const sampleInput = 'ihgpwlah';
+    const sampleInput = 'hijkl';
 
     const inputToUse = sampleInput;
 
     let pathThusFar = ''; // append UDLR
 
+    const width = 4;
+    const height = 4;
+
+    let currentX = 0;
+    let currentY = 0;
+
     function doorStatusHash(input, pathString) {
         return md5(input + pathString);
     }
-
-    const currentStatusHash = doorStatusHash(inputToUse, pathThusFar);
 
     function doorIsOpen(character) {
         const char = character.toLowerCase();
@@ -28,7 +32,38 @@
         };
     }
 
+    function canWalkDirections(openDoorsStatus) {
+        const validDirections = {
+            total: 0,
+        };
+
+        Object.keys(openDoorsStatus).forEach(direction => {
+            console.log('direction:', direction);
+            // Direction only valid if inside maze
+            if (
+                currentX == 0 && direction === 'left' ||
+                currentX === width && direction === 'right' ||
+                currentY === 0 && direction === 'up' ||
+                currentY === height && direction === 'down'
+            ) {
+                validDirections[direction] = false;
+            } else {
+                if (openDoorsStatus[direction]) {
+                    validDirections.total++;
+                }
+                validDirections[direction] = openDoorsStatus[direction];
+            }
+        });
+
+        return validDirections;
+    }
+
+    const currentStatusHash = doorStatusHash(inputToUse, pathThusFar);
+    const openDoorsStatus = statusUpDownLeftRightOpen(currentStatusHash);
+    const validDirections = canWalkDirections(openDoorsStatus);
+
     console.log('currentStatusHash:', currentStatusHash);
-    console.log('statusUpDownLeftRightOpen(currentStatusHash):', statusUpDownLeftRightOpen(currentStatusHash));
+    console.log('openDoorsStatus:', openDoorsStatus);
+    console.log('validDirections:', validDirections);
 
 </script>

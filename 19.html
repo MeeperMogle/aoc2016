@@ -1,16 +1,17 @@
 <script>
     const sampleInput = 5;
+    const input1 = 3005290;
 
-    const inputToUse = sampleInput;
+    const inputToUse = input1;
 
     const presentsAtPosition = [];
-    for (let i = 0; i < sampleInput; i++) {
+    for (let i = 0; i < inputToUse; i++) {
         presentsAtPosition[i] = 1;
     }
 
     function takePresents(positionOneBased) {
-        const position = parseInt(positionOneBased - 1) >= presentsAtPosition.length ? 0 : parseInt(positionOneBased - 1);
-        //        console.log('Position:', positionOneBased);
+        const wouldBePosition = parseInt(positionOneBased - 1);
+        const position = wouldBePosition >= presentsAtPosition.length ? 0 : wouldBePosition;
 
         if (presentsAtPosition[position] === 0) {
             console.log(`Elf ${positionOneBased} has no presents and is skipped.`);

@@ -6,6 +6,8 @@
 
     let pathThusFar = ''; // append UDLR
 
+    let shortestPathThere = '';
+
     const width = 4;
     const height = 4;
 
@@ -91,14 +93,13 @@
     }
 
     for (let i = 0; i < 60; i++) {
-        console.group(inputToUse + pathThusFar);
         const currentStatusHash = doorStatusHash(inputToUse, pathThusFar);
         const openDoorsStatus = statusUpDownLeftRightOpen(currentStatusHash);
         const validDirections = canWalkDirections(openDoorsStatus);
 
-        console.log('validDirections:', validDirections.total);
+        console.log(inputToUse + pathThusFar, validDirections.total);
 
-        if (validDirections.total === 0) {
+        if (validDirections.total === 0 || pathThusFar.length === shortestPathThere.length - 1) {
             // Blacklist and backtrack
             blackListedPaths.push(pathThusFar);
             revertStepLogically(pathThusFar[pathThusFar.length - 1]);
@@ -146,10 +147,12 @@
             pathThusFar += nextDirection;
 
             if (position.x === goalPosition.x && position.y === goalPosition.y) {
+                if (shortestPathThere === '' || pathThusFar.length < shortestPathThere.length) {
+                    shortestPathThere = pathThusFar;
+                }
                 console.log('At goal using ', pathThusFar);
             }
         }
-        console.groupEnd();
     }
 
 </script>

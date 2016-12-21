@@ -4,6 +4,11 @@
 
     const customInput = ['3111594-3180044','3139807-3256943','0-3021649','3256944-3556639','3021650-3111593'];
 
+    // Smoothly get an object containing start and end of a range-post
+    function range(string) {
+        return { start: parseInt(string.split('-')[0]), end: parseInt(string.split('-')[1]) };
+    }
+
     let inputToUse = input1;
 
     // Sort array numerically
@@ -57,9 +62,26 @@
 
     // Blacklist starts from the bottom? 1 over the end is correct
     if (inputToUse[0].startsWith('0')) {
-        const firstValid = parseInt(inputToUse[0].split('-')[1]) + 1;
-        console.log('Lowest valid number:', firstValid);
+        const lowestValid = parseInt(inputToUse[0].split('-')[1]) + 1;
+        console.log('Lowest valid number:', lowestValid);
     } else {
         console.log('Lowest valid is 0');
     }
+
+    // How many addresses 0-4294967295 are not inside the blacklist?
+
+    // Start from the top, 4294967295, and move downwards in the blacklist...
+    // Start by calculating any allowed once from the last range up to the roof
+    const roof = 4294967295;
+    let totalAddresses = roof - range(inputToUse[inputToUse.length - 1]).end;
+
+    // Loop from the next-to-last one to the first one
+    for(let i = inputToUse.length - 2; i >= 0; i--) {
+        // Calculate the difference from the end of the lower one until the start of the higher (next) one.
+        // Take 1 off to account for both numbers being inclusively blocking.
+        const difference = range(inputToUse[i+1]).start - range(inputToUse[i]).end - 1;
+        totalAddresses += difference;
+    }
+
+    console.log('Allowed addresses:', totalAddresses);
 </script>

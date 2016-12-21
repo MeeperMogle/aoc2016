@@ -4,16 +4,31 @@
 
     const inputToUse = sampleInput;
 
-    let pathThusFar = ''; // append URDL
+    let pathThusFar = ''; // append UDLR
 
     function doorStatusHash(input, pathString) {
         return md5(input + pathString);
     }
 
-    console.log('doorStatusHash(inputToUse, pathThusFar):', doorStatusHash(inputToUse, pathThusFar));
+    const currentStatusHash = doorStatusHash(inputToUse, pathThusFar);
 
-    function statusUpRightDownLeftOpen(statusHash) {
-
+    function doorIsOpen(character) {
+        const char = character.toLowerCase();
+        return char !== 'a' && !Number.isInteger(parseInt(character));
     }
+
+    function statusUpDownLeftRightOpen(statusHash) {
+        // Up, down, left, right
+        const statusCharacters = statusHash.substr(0, 4);
+        return {
+            up: doorIsOpen(statusCharacters[0]),
+            down: doorIsOpen(statusCharacters[1]),
+            left: doorIsOpen(statusCharacters[2]),
+            right: doorIsOpen(statusCharacters[3]),
+        };
+    }
+
+    console.log('currentStatusHash:', currentStatusHash);
+    console.log('statusUpDownLeftRightOpen(currentStatusHash):', statusUpDownLeftRightOpen(currentStatusHash));
 
 </script>

@@ -1,0 +1,37 @@
+<script>
+    const sampleInput = 5;
+
+    const inputToUse = sampleInput;
+
+    const presentsAtPosition = [];
+    for (let i = 0; i < sampleInput; i++) {
+        presentsAtPosition[i] = 1;
+    }
+
+    function takePresents(positionOneBased) {
+        const position = parseInt(positionOneBased - 1) >= presentsAtPosition.length ? 0 : parseInt(positionOneBased - 1);
+        //        console.log('Position:', positionOneBased);
+
+        if (presentsAtPosition[position] === 0) {
+            console.log(`Elf ${positionOneBased} has no presents and is skipped.`);
+            takePresents(position + 2);
+        } else {
+            let shallTakeFrom = position + 1 >= presentsAtPosition.length ? 0 : position + 1;
+
+            while (presentsAtPosition[shallTakeFrom] === 0) {
+                shallTakeFrom = shallTakeFrom + 1 === presentsAtPosition.length ? 0 : shallTakeFrom + 1;
+            }
+
+            if (shallTakeFrom === position) {
+                console.log('That\'s the game! Elf ' + positionOneBased + ' won!');
+            } else {
+                console.log(`Elf ${positionOneBased} takes Elf ${shallTakeFrom + 1}'s presents.`);
+                presentsAtPosition[shallTakeFrom] = 0;
+                takePresents(position + 2 >= presentsAtPosition.length ? 1 : position + 2);
+            }
+        }
+    }
+
+    takePresents(1);
+
+</script>

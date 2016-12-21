@@ -12,7 +12,10 @@
     let currentX = 0;
     let currentY = 0;
 
+    let blackListedPaths = [];
+
     function doorStatusHash(input, pathString) {
+        console.log(input + pathString);
         return md5(input + pathString);
     }
 
@@ -24,6 +27,7 @@
     function statusUpDownLeftRightOpen(statusHash) {
         // Up, down, left, right
         const statusCharacters = statusHash.substr(0, 4);
+        console.log('statusCharacters:', statusCharacters);
         return {
             up: doorIsOpen(statusCharacters[0]),
             down: doorIsOpen(statusCharacters[1]),
@@ -35,10 +39,10 @@
     function canWalkDirections(openDoorsStatus) {
         const validDirections = {
             total: 0,
+            latestValid: null,
         };
 
         Object.keys(openDoorsStatus).forEach(direction => {
-            console.log('direction:', direction);
             // Direction only valid if inside maze
             if (
                 currentX == 0 && direction === 'left' ||
@@ -50,6 +54,7 @@
             } else {
                 if (openDoorsStatus[direction]) {
                     validDirections.total++;
+                    validDirections.latestValid = direction;
                 }
                 validDirections[direction] = openDoorsStatus[direction];
             }
@@ -58,12 +63,44 @@
         return validDirections;
     }
 
-    const currentStatusHash = doorStatusHash(inputToUse, pathThusFar);
-    const openDoorsStatus = statusUpDownLeftRightOpen(currentStatusHash);
-    const validDirections = canWalkDirections(openDoorsStatus);
+    function chooseDirection(validDirections) {
+        if (validDirections.down) return 'D';
+        if (validDirections.right) return 'R';
+        if (validDirections.left) return 'L';
+        if (validDirections.up) return 'U';
+    }
 
-    console.log('currentStatusHash:', currentStatusHash);
-    console.log('openDoorsStatus:', openDoorsStatus);
-    console.log('validDirections:', validDirections);
+    for (let i = 0; i < 3; i++) {
+        const currentStatusHash = doorStatusHash(inputToUse, pathThusFar);
+        const openDoorsStatus = statusUpDownLeftRightOpen(currentStatusHash);
+        const validDirections = canWalkDirections(openDoorsStatus);
+
+        console.log('openDoorsStatus:', openDoorsStatus);
+        console.log('validDirections:', validDirections);
+
+        if (validDirections.total === 0) {
+            // Blacklist and backtrack
+        } else {
+            let nextDirection = validDirections.latestValid[0].toUpperCase();
+            if (validDirections.total > 1) {
+                nextDirection = chooseDirection(validDirections);
+            }
+            switch (nextDirection) {
+                case 'L':
+                    currentX--;
+                    break;
+                case 'R':
+                    currentX++;
+                    break;
+                case 'U':
+                    currentY--;
+                    break;
+                case 'D':
+                    currentY++;
+                    break;
+            }
+            pathThusFar += nextDirection;
+        }
+    }
 
 </script>

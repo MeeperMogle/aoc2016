@@ -1,6 +1,6 @@
 <script src="http://www.myersdaily.org/joseph/javascript/md5.js"></script>
 <script>
-    const sampleInput = 'hijkl';
+    const sampleInput = 'ihgpwlah';
 
     const inputToUse = sampleInput;
 
@@ -9,13 +9,12 @@
     const width = 4;
     const height = 4;
 
-    let currentX = 0;
-    let currentY = 0;
+    const position = { x: 0, y: 0, };
+    const goalPosition = { x: 4, y: 4, };
 
     let blackListedPaths = [];
 
     function doorStatusHash(input, pathString) {
-        console.log(input + pathString);
         return md5(input + pathString);
     }
 
@@ -27,13 +26,29 @@
     function statusUpDownLeftRightOpen(statusHash) {
         // Up, down, left, right
         const statusCharacters = statusHash.substr(0, 4);
-        console.log('statusCharacters:', statusCharacters);
         return {
             up: doorIsOpen(statusCharacters[0]),
             down: doorIsOpen(statusCharacters[1]),
             left: doorIsOpen(statusCharacters[2]),
             right: doorIsOpen(statusCharacters[3]),
         };
+    }
+
+    function revertStepLogically(character) {
+        switch (character) {
+            case 'L':
+                position.x++;
+                break;
+            case 'R':
+                position.x--;
+                break;
+            case 'U':
+                position.y++;
+                break;
+            case 'D':
+                position.y--;
+                break;
+        }
     }
 
     function canWalkDirections(openDoorsStatus) {
@@ -45,18 +60,23 @@
         Object.keys(openDoorsStatus).forEach(direction => {
             // Direction only valid if inside maze
             if (
-                currentX == 0 && direction === 'left' ||
-                currentX === width && direction === 'right' ||
-                currentY === 0 && direction === 'up' ||
-                currentY === height && direction === 'down'
+                position.x == 0 && direction === 'left' ||
+                position.x === width && direction === 'right' ||
+                position.y === 0 && direction === 'up' ||
+                position.y === height && direction === 'down'
             ) {
                 validDirections[direction] = false;
             } else {
-                if (openDoorsStatus[direction]) {
-                    validDirections.total++;
-                    validDirections.latestValid = direction;
+                // Direction not valid if it is blacklisted
+                if (blackListedPaths.includes(pathThusFar + (direction[0].toUpperCase()))) {
+                    validDirections[direction] = false;
+                } else {
+                    if (openDoorsStatus[direction]) {
+                        validDirections.total++;
+                        validDirections.latestValid = direction;
+                    }
+                    validDirections[direction] = openDoorsStatus[direction];
                 }
-                validDirections[direction] = openDoorsStatus[direction];
             }
         });
 
@@ -70,16 +90,40 @@
         if (validDirections.up) return 'U';
     }
 
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 60; i++) {
+        console.group(inputToUse + pathThusFar);
         const currentStatusHash = doorStatusHash(inputToUse, pathThusFar);
         const openDoorsStatus = statusUpDownLeftRightOpen(currentStatusHash);
         const validDirections = canWalkDirections(openDoorsStatus);
 
-        console.log('openDoorsStatus:', openDoorsStatus);
-        console.log('validDirections:', validDirections);
+        console.log('validDirections:', validDirections.total);
 
         if (validDirections.total === 0) {
             // Blacklist and backtrack
+            blackListedPaths.push(pathThusFar);
+            revertStepLogically(pathThusFar[pathThusFar.length - 1]);
+            pathThusFar = pathThusFar.substr(0, pathThusFar.length - 1);
+
+            let firstRun = true;
+            let totalBlackListedPrevious = 0;
+
+            while (firstRun || totalBlackListedPrevious === 4) {
+                firstRun = false;
+
+                ['U', 'D', 'L', 'R'].forEach(direction => {
+                    if (blackListedPaths.includes(pathThusFar + direction)) {
+                        totalBlackListedPrevious++;
+                    }
+                });
+
+                if (totalBlackListedPrevious === 4) {
+                    blackListedPaths.push(pathThusFar);
+                    revertStepLogically(pathThusFar[pathThusFar.length - 1]);
+                    pathThusFar = pathThusFar.substr(0, pathThusFar.length - 1);
+                }
+            }
+
+            // 1 step back; all blacklisted? 1 step back; ...
         } else {
             let nextDirection = validDirections.latestValid[0].toUpperCase();
             if (validDirections.total > 1) {
@@ -87,20 +131,25 @@
             }
             switch (nextDirection) {
                 case 'L':
-                    currentX--;
+                    position.x--;
                     break;
                 case 'R':
-                    currentX++;
+                    position.x++;
                     break;
                 case 'U':
-                    currentY--;
+                    position.y--;
                     break;
                 case 'D':
-                    currentY++;
+                    position.y++;
                     break;
             }
             pathThusFar += nextDirection;
+
+            if (position.x === goalPosition.x && position.y === goalPosition.y) {
+                console.log('At goal using ', pathThusFar);
+            }
         }
+        console.groupEnd();
     }
 
 </script>

@@ -1,0 +1,41 @@
+<script>
+    const sampleInput = 'abcde';
+    const sampleOperations = ['swap position 4 with position 0', 'swap letter d with letter b', 'reverse positions 0 through 4', 'rotate left 1 step', 'move position 1 to position 4', 'move position 3 to position 0', 'rotate based on position of letter b', 'rotate based on position of letter d'];
+
+    const inputToUse = sampleInput;
+    const operationsToUse = sampleOperations;
+
+    let scrambled = inputToUse;
+
+    function swapPos(string, x, y) {
+        let copy = string;
+        copy = copy.substr(0, x) + string.charAt(y) + copy.substr(x + 1);
+        copy = copy.substr(0, y) + string.charAt(x) + copy.substr(y + 1);
+        return copy;
+    }
+
+    function swapLetter(string, a, b) {
+        return swapPos(string, string.indexOf(a), string.indexOf(b));
+    }
+
+    function rotate(string, num) {
+        let copy = string;
+        for (let i = 0; i < string.length; i++) {
+            const newLetterPosition = num > 0 ?
+                num + i >= string.length ? num + i - string.length : num + i :
+                i - num < 0 ? num - 1 + string.length : i - num;
+
+            copy = copy.substr(0, newLetterPosition) + string[i] + copy.substr(newLetterPosition + 1);
+        }
+        return copy;
+    }
+
+    operationsToUse.forEach(operation => {
+        //        console.log(operation);
+    });
+
+    console.log(
+        rotate(inputToUse, 1)
+    );
+
+</script>

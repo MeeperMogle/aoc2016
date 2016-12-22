@@ -1,6 +1,7 @@
 <script>
     const input = {
-        sample: ['The first floor contains a hydrogen-compatible microchip and a lithium-compatible microchip.','The second floor contains a hydrogen generator.','The third floor contains a lithium generator.','The fourth floor contains nothing relevant.'],
+        sample: ['The first floor contains a hydrogen-compatible microchip and a lithium-compatible microchip.', 'The second floor contains a hydrogen generator.', 'The third floor contains a lithium generator.', 'The fourth floor contains nothing relevant.'],
+        one: ['The first floor contains a promethium generator and a promethium-compatible microchip.','The second floor contains a cobalt generator, a curium generator, a ruthenium generator, and a plutonium generator.','The third floor contains a cobalt-compatible microchip, a curium-compatible microchip, a ruthenium-compatible microchip, and a plutonium-compatible microchip.','The fourth floor contains nothing relevant.'],
     };
 
     const inputToUse = input.sample;
@@ -10,7 +11,63 @@
         generators: {},
     };
 
+    console.group('Initialization phase');
     inputToUse.forEach(listing => {
+        console.group(listing);
 
+        // Determine what floor the current description is about
+        const floorWord = listing.split(' ')[1];
+        let floor = 0;
+
+        switch (floorWord) {
+            case 'first':
+                floor = 1;
+                break;
+            case 'second':
+                floor = 2;
+                break;
+            case 'third':
+                floor = 3;
+                break;
+            case 'fourth':
+                floor = 4;
+                break;
+        }
+
+        // Find all microchips mentioned in this description
+        const microchips = listing.match(/[^ ]+-compatible microchip/g);
+        if (microchips) {
+            microchips.forEach(microchip => {
+                // Add their type to the structure, together with what floor they start on
+                const microchipType = microchip.match(/.+(?=-)/)[0];
+
+                if (!building.microchips[microchipType]) {
+                    building.microchips[microchipType] = {
+                        floor,
+                    };
+                }
+            });
+        }
+
+        // Find all generators mentioned in this description
+        const generators = listing.match(/[^ ]+ generator/g);
+        if (generators) {
+            generators.forEach(generator => {
+                // Add their type to the structure, together with what floor they start on
+                const generatorType = generator.split(' ')[0];
+
+                if (!building.generators[generatorType]) {
+                    building.generators[generatorType] = {
+                        floor,
+                    };
+                }
+            });
+        }
+
+        console.groupEnd();
     });
+    console.groupEnd();
+
+    console.log('Building layout:', building);
+
 </script>

@@ -6,18 +6,26 @@
                 x: 7,
                 y: 4,
             },
+            rowsToDisplay: 7,
+            colsToDisplay: 10,
+        },
+        one: {
+            favouriteNumber: 1364,
+            goal: {
+                x: 31,
+                y: 39,
+            },
+            rowsToDisplay: 40,
+            colsToDisplay: 32,
         },
     };
 
-    const inputToUse = input.sample;
-
-    const rowsToDisplay = 7;
-    const colsToDisplay = 10;
+    const inputToUse = input.one;
 
     function positionIsWall(plainX, plainY) {
         const x = parseInt(plainX);
         const y = parseInt(plainY);
-        const fullNumber = (x*x) + (3*x) + (2*x*y) + y + (y*y) + inputToUse.favouriteNumber;
+        const fullNumber = (x * x) + (3 * x) + (2 * x * y) + y + (y * y) + inputToUse.favouriteNumber;
         const binary = fullNumber.toString(2);
         const onesInBinary = binary.split('1').length - 1;
 
@@ -25,15 +33,15 @@
     }
 
     let display = '  ';
-    for(let col=0; col < colsToDisplay; col++) {
+    for (let col = 0; col < inputToUse.colsToDisplay; col++) {
         display += col;
     }
     display += '\n'
 
-    for(let row=0; row < rowsToDisplay; row++) {
+    for (let row = 0; row < inputToUse.rowsToDisplay; row++) {
         display += row + ' ';
 
-        for(let col=0; col < colsToDisplay; col++) {
+        for (let col = 0; col < inputToUse.colsToDisplay; col++) {
             display += positionIsWall(col, row) ? '#' : '.';
         }
 
@@ -41,4 +49,5 @@
     }
 
     console.log(display);
+
 </script>

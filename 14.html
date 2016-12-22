@@ -1,0 +1,46 @@
+<script src="http://www.myersdaily.org/joseph/javascript/md5.js"></script>
+<script>
+    const input = {
+        sample: 'abc',
+    };
+
+    const inputToUse = input.sample;
+
+    function getIndexOfXidenticalChars(hash, plainX) {
+        const x = parseInt(plainX);
+
+        for (let i = 0; i < hash.length + 1 - x; i++) {
+            const firstCharCode = hash.charCodeAt(i);
+
+            let sumFirstCharCodes = firstCharCode;
+
+            for (let j = i + 1; j < i + x; j++) {
+                sumFirstCharCodes += hash.charCodeAt(j);
+            }
+
+            const average = sumFirstCharCodes / x;
+
+            if (firstCharCode === average) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    for (let i = 0; i < 1; i++) {
+        const hash = md5(inputToUse + i);
+
+        console.group(i, hash);
+
+        const tripleRepeatIndex = getIndexOfXidenticalChars(hash, 2);
+
+        if (tripleRepeatIndex > -1) {
+            console.log('tripleRepeatIndex:', tripleRepeatIndex);
+        }
+
+
+        console.groupEnd();
+    }
+
+</script>

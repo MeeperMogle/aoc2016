@@ -1,0 +1,21 @@
+<script>
+    const input = {
+        sample: {
+            favouriteNumber: 10,
+            goal: {
+                x: 7,
+                y: 4,
+            },
+        },
+    };
+
+    const inputToUse = input.sample;
+
+    function positionIsWall(plainX, plainY) {
+        const x = parseInt(plainX);
+        const y = parseInt(plainY);
+        const fullNumber = (x*x) + (3*x) + (2*x*y) + y + (y*y) + inputToUse.favouriteNumber;
+
+        let binaryRepresentation = '';
+    }
+</script>

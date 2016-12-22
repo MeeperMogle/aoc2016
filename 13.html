@@ -15,12 +15,14 @@
                 x: 31,
                 y: 39,
             },
-            rowsToDisplay: 40,
-            colsToDisplay: 32,
+            rowsToDisplay: 70,
+            colsToDisplay: 50,
         },
     };
 
-    const inputToUse = input.one;
+    const inputToUse = input.sample;
+
+    const floorTiles = {};
 
     function positionIsWall(plainX, plainY) {
         const x = parseInt(plainX);
@@ -42,7 +44,15 @@
         display += row + ' ';
 
         for (let col = 0; col < inputToUse.colsToDisplay; col++) {
-            display += positionIsWall(col, row) ? '#' : '.';
+            if (positionIsWall(col, row)) {
+                display += '#';
+            } else if (col === inputToUse.goal.x && row === inputToUse.goal.y) {
+                display += 'G';
+            } else if (col === 1 && row === 1) {
+                display += 'S';
+            } else {
+                display += '.';
+            }
         }
 
         display += '\n';

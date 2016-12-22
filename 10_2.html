@@ -1,0 +1,71 @@
+<script>
+    const inputs = {
+        sample1: ['ADVENT', 'A(1x5)BC', '(3x3)XYZ', 'A(2x2)BCD(2x2)EFG', '(6x1)(1x3)A', 'X(8x2)(3x3)ABCY'],
+        sample2: ['(3x3)XYZ', 'X(8x2)(3x3)ABCY', '(27x12)(20x12)(13x14)(7x10)(1x12)A', '(25x3)(3x3)ABC(2x3)XY(5x2)PQRSTX(18x9)(3x2)TWO(5x7)SEVEN'],
+    };
+
+    const inputToUse = inputs.sample2;
+
+    function decompressedSize(input, depth) {
+        // Total size of input
+        let totalDecompressedSize = 0;
+
+        // Go through until end of input
+        for (let i = 0; i < input.length; i++) {
+            // Find next parentheses, and based on that the position of the next iteration
+            const indexOfNextParentheses = input.indexOf('(', i);
+            const nextPosition = indexOfNextParentheses === -1 ? input.length : indexOfNextParentheses;
+
+            // If the next position to process is further along,
+            if (nextPosition > i) {
+                // add the distance (already decompressed), then move on...
+                totalDecompressedSize += (nextPosition - i);
+
+                // ... unless "next position" is "end of string", in which case just stop
+                if (nextPosition === input.length) {
+                    break;
+                }
+            }
+            // Current iteration should process a parentheses!
+            else {
+                const startOfParentheses = indexOfNextParentheses;
+                const endOfParentheses = input.indexOf(')', startOfParentheses);
+                const parenthesesNumbers = input.substring(startOfParentheses + 1, endOfParentheses).split('x');
+
+                const repeatedSubstring = input.substr(endOfParentheses + 1, parseInt(parenthesesNumbers[0]));
+
+                if (!repeatedSubstring.includes('(')) {
+                    // No "inner" compression, this iteration can just add the total
+                    totalDecompressedSize += parseInt(parenthesesNumbers[0]) * parseInt(parenthesesNumbers[1]);
+
+                    // Jump past that string
+                    i = endOfParentheses + parseInt(parenthesesNumbers[0]);
+                }
+                // Handle "inner" compression
+                else {
+                    const innerSize = decompressedSize(repeatedSubstring, depth + 1) * parseInt(parenthesesNumbers[1]);
+
+                    // If at the shallowest level, not inside of the recursion, add the current total
+                    if (depth === 0) {
+                        totalDecompressedSize += innerSize;
+                    } else {
+                        // If at a deeper (higher) level of depth, just send the number backwards
+                        return innerSize;
+                    }
+
+                    // Next iteration starts after the current multi-layered parentheses, as it is now fully calculated
+                    i = endOfParentheses + parseInt(parenthesesNumbers[0]);
+                }
+            }
+        }
+
+        return totalDecompressedSize;
+    }
+
+    inputToUse.forEach(data => {
+        console.group(data);
+        console.log(decompressedSize(data, 0));
+        console.groupEnd();
+    });
+
+</script>

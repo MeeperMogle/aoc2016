@@ -11,11 +11,34 @@
 
     const inputToUse = input.sample;
 
+    const rowsToDisplay = 7;
+    const colsToDisplay = 10;
+
     function positionIsWall(plainX, plainY) {
         const x = parseInt(plainX);
         const y = parseInt(plainY);
         const fullNumber = (x*x) + (3*x) + (2*x*y) + y + (y*y) + inputToUse.favouriteNumber;
+        const binary = fullNumber.toString(2);
+        const onesInBinary = binary.split('1').length - 1;
 
-        let binaryRepresentation = '';
+        return onesInBinary % 2 === 1;
     }
+
+    let display = '  ';
+    for(let col=0; col < colsToDisplay; col++) {
+        display += col;
+    }
+    display += '\n'
+
+    for(let row=0; row < rowsToDisplay; row++) {
+        display += row + ' ';
+
+        for(let col=0; col < colsToDisplay; col++) {
+            display += positionIsWall(col, row) ? '#' : '.';
+        }
+
+        display += '\n';
+    }
+
+    console.log(display);
 </script>

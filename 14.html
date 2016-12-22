@@ -2,9 +2,12 @@
 <script>
     const input = {
         sample: 'abc',
+        one: 'zpqevtbw',
     };
 
-    const inputToUse = input.sample;
+    const inputToUse = input.one;
+
+    const usableHashes = [];
 
     function getIndexOfXidenticalChars(hash, plainX) {
         const x = parseInt(plainX);
@@ -12,35 +15,50 @@
         for (let i = 0; i < hash.length + 1 - x; i++) {
             const firstCharCode = hash.charCodeAt(i);
 
-            let sumFirstCharCodes = firstCharCode;
+            let foundFaulty = false;
 
-            for (let j = i + 1; j < i + x; j++) {
-                sumFirstCharCodes += hash.charCodeAt(j);
+            for (let j = i + 1; !foundFaulty && j < i + x; j++) {
+                foundFaulty = hash.charCodeAt(j) !== firstCharCode;
             }
 
-            const average = sumFirstCharCodes / x;
-
-            if (firstCharCode === average) {
+            if (!foundFaulty) {
                 return i;
             }
         }
-
         return -1;
     }
 
-    for (let i = 0; i < 1; i++) {
+    function hasRepeatsOfCharacter(hash, character, times) {
+        let characterRepeat = '';
+        for(let i=0; i<times; i++) {
+            characterRepeat += character;
+        }
+        return hash.indexOf(characterRepeat) > -1;
+    }
+
+    for (let i = 0; usableHashes.length < 64; i++) {
         const hash = md5(inputToUse + i);
-
-        console.group(i, hash);
-
-        const tripleRepeatIndex = getIndexOfXidenticalChars(hash, 2);
+        const tripleRepeatIndex = getIndexOfXidenticalChars(hash, 3);
 
         if (tripleRepeatIndex > -1) {
-            console.log('tripleRepeatIndex:', tripleRepeatIndex);
+            // Is there a hash in the next 1000 indexes from i which has this SAME character... 5 times?
+            let foundFiveTimer = false;
+
+            for(let j=i+1; j<i+1+1000; j++) {
+                const innerHash = md5(inputToUse + j);
+                if (hasRepeatsOfCharacter(innerHash, hash.charAt(tripleRepeatIndex), 5)) {
+                    foundFiveTimer = true;
+                    console.log('Pushing hash made from i',i,'j',j);
+                    break;
+                }
+            }
+
+            if (foundFiveTimer) {
+                usableHashes.push(hash);
+            }
         }
-
-
-        console.groupEnd();
     }
+
+    console.log('usableHashes:', usableHashes);
 
 </script>

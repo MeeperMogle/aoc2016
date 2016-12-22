@@ -56,12 +56,43 @@
                     display += '.';
                 }
 
-                floorTiles[row][col] = {connectedTo: [], };
+                floorTiles[row][col] = {connectedTo: [], x: col, y: row, };
             }
         }
 
         display += '\n';
     }
+
+    // Connect adjacent floor tiles together
+    Object.keys(floorTiles).forEach(plainY => {
+        Object.keys(floorTiles[plainY]).forEach(plainX => {
+            const y = parseInt(plainY);
+            const x = parseInt(plainX);
+
+            const up = { x, y: y - 1, };
+            const down = { x, y: y + 1, };
+            const left = { x: x - 1, y, };
+            const right = { x: x + 1, y, };
+
+            // If the above/left-hand tile is open floor it is added to the connected-array
+            // Not if at the top/far-left border
+            if (y > 0 && !positionIsWall(up.x, up.y)) {
+                floorTiles[y][x].connectedTo.push( floorTiles[up.y][up.x] );
+            }
+            if (x > 0 && !positionIsWall(left.x, left.y)) {
+                floorTiles[y][x].connectedTo.push( floorTiles[left.y][left.x] );
+            }
+
+            // If the below/right-hand tile is open floor it is added to the connected-array
+            // Not if at the bottom/far-right border
+            if (y < inputToUse.rowsToDisplay - 1 && !positionIsWall(down.x, down.y)) {
+                floorTiles[y][x].connectedTo.push( floorTiles[down.y][down.x] );
+            }
+            if (x < inputToUse.colsToDisplay - 1 && !positionIsWall(right.x, right.y)) {
+                floorTiles[y][x].connectedTo.push( floorTiles[right.y][right.x] );
+            }
+        });
+    });
 
     console.log(display);
     console.log('floorTiles:', floorTiles);

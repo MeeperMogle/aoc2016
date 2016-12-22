@@ -42,16 +42,21 @@
 
     for (let row = 0; row < inputToUse.rowsToDisplay; row++) {
         display += row + ' ';
+        floorTiles[row] = {};
 
         for (let col = 0; col < inputToUse.colsToDisplay; col++) {
             if (positionIsWall(col, row)) {
                 display += '#';
-            } else if (col === inputToUse.goal.x && row === inputToUse.goal.y) {
-                display += 'G';
-            } else if (col === 1 && row === 1) {
-                display += 'S';
             } else {
-                display += '.';
+                if (col === inputToUse.goal.x && row === inputToUse.goal.y) {
+                    display += 'G';
+                } else if (col === 1 && row === 1) {
+                    display += 'S';
+                } else {
+                    display += '.';
+                }
+
+                floorTiles[row][col] = {connectedTo: [], };
             }
         }
 
@@ -59,5 +64,5 @@
     }
 
     console.log(display);
-
+    console.log('floorTiles:', floorTiles);
 </script>

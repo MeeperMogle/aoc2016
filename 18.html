@@ -11,34 +11,29 @@
     const rowsToUse = rows2;
     const rowWidth = inputToUse.length;
 
-    const rows = [inputToUse.split('')];
+    let totalSafeSpots = inputToUse.split('.').length - 1;
 
-    for (let row=1; row < rowsToUse; row++) {
-        const newRow = [];
+    let aboveRow = inputToUse;
 
-        for (let column = 0; column < rowWidth; column++ ) {
-            const left = column - 1 >= 0 ? rows[row - 1][column - 1] : '.';
-            const right = column + 1 < rowWidth ? rows[row - 1][column + 1] : '.';
-            const center = rows[row-1][column];
+    for (let row = 1; row < rowsToUse; row++) {
+        let newRow = '';
+
+        for (let column = 0; column < rowWidth; column++) {
+            const left = column - 1 >= 0 ? aboveRow[column - 1] : '.';
+            const right = column + 1 < rowWidth ? aboveRow[column + 1] : '.';
+            const center = aboveRow[column];
 
             const trap = (left === '^' && center === '^' && right !== '^') ||
-                  (center === '^' && right === '^' && left !== '^') ||
-                  (left === '^' && right !== '^' && center !== '^') ||
-                  (right === '^' && left !== '^' && center !== '^');
+                (center === '^' && right === '^' && left !== '^') ||
+                (left === '^' && right !== '^' && center !== '^') ||
+                (right === '^' && left !== '^' && center !== '^');
 
-            newRow.push( trap ? '^' : '.' );
+            newRow += trap ? '^' : '.';
+            totalSafeSpots += trap ? 0 : 1;
         }
-        rows.push(newRow);
+        aboveRow = newRow;
     }
 
-    let output = '';
-    rows.forEach(row => {
-        row.forEach(column => {
-            output += column;
-        });
-        output += '\n';
-    });
-//    console.log(output);
+    console.log('Safe Tiles:', totalSafeSpots);
 
-    console.log('Safe Tiles:', output.split('.').length - 1);
 </script>

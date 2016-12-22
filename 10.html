@@ -1,0 +1,71 @@
+<script>
+    const inputs = {
+        sample: ['value 5 goes to bot 2', 'bot 2 gives low to bot 1 and high to bot 0', 'value 3 goes to bot 1', 'bot 1 gives low to output 1 and high to bot 0', 'bot 0 gives low to output 2 and high to output 0', 'value 2 goes to bot 2'],
+    };
+
+    const inputToUse = inputs.sample;
+
+    const room = {
+        bots: {},
+        outputs: {},
+    };
+
+    const instructionsNotDone = [];
+
+    console.group('Initializer phase');
+    inputToUse.forEach(instruction => {
+        console.group(instruction);
+
+        // Find and initiate all mentioned bots
+        const bots = instruction.match(/bot \d+/g);
+        if (bots) {
+            bots.forEach(bot => {
+                if (!room.bots[bot.match(/\d+/)]) {
+                    room.bots[bot.match(/\d+/)] = {
+                        values: [],
+                        givesLowTo: null,
+                        givesHighTo: null,
+                    };
+                }
+            });
+        }
+
+        // Find and initiate all mentioned outputs
+        const outputs = instruction.match(/output \d+/g);
+        if (outputs) {
+            outputs.forEach(output => {
+                if (!room.outputs[output.match(/\d+/)]) {
+                    room.outputs[output.match(/\d+/)] = {
+                        values: [],
+                    };
+                }
+            });
+        }
+
+        // Value start position indicator statement
+        if (instruction.split(' ')[0] === 'value') {
+            const value = parseInt(instruction.split(' ')[1]);
+            const toBot = parseInt(bots[0].match(/\d+/));
+
+            room.bots[toBot].values.push(value);
+        }
+        // Giving-instruction, keep that for next things
+        else {
+            instructionsNotDone.push(instruction);
+        }
+
+        console.groupEnd();
+    });
+
+    console.log('room:', room);
+    console.groupEnd();
+
+
+    console.group('Instructions phase');
+
+//    while(instructionsNotDone.length > 0) {
+//
+//    }
+
+    console.groupEnd();
+</script>

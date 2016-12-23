@@ -2,11 +2,49 @@
 <script>
     const input = {
         sample: ['cpy 2 a', 'tgl a', 'tgl a', 'tgl a', 'cpy 1 a', 'dec a', 'dec a'],
+        one: ['cpy a b','dec b','cpy a d','cpy 0 a','cpy b c','inc a','dec c','jnz c -2','dec d','jnz d -5','dec b','cpy b c','cpy c d','dec d','inc c','jnz d -2','tgl c','cpy -16 c','jnz 1 c','cpy 86 c','jnz 77 d','inc a','inc d','jnz d -2','inc c','jnz c -5'],
     };
 
-    const inputToUse = input.sample;
+    const inputToUse = input.one;
 
-    for (let i = 0; i < inputToUse.length; i++) {
+    function tgl(relativeSteps, currentIndex) {
+        const targetIndex = currentIndex + relativeSteps;
+
+        if (targetIndex < 0 || targetIndex >= inputToUse.length) {
+
+        } else {
+            const originalCommandType = inputToUse[targetIndex].split(' ')[0];
+//            console.log('originalCommandType:', originalCommandType);
+            let newCommand = '';
+
+            switch (originalCommandType) {
+                case 'cpy':
+                    newCommand = 'jnz';
+                    break;
+                case 'jnz':
+                    newCommand = 'cpy';
+                    break;
+                case 'inc':
+                    newCommand = 'dec';
+                    break;
+                case 'dec':
+                case 'tgl':
+                    newCommand = 'inc';
+                    break;
+            }
+
+//            console.log('newCommand:', newCommand);
+            inputToUse[targetIndex] = inputToUse[targetIndex].replace(originalCommandType, newCommand);
+        }
+
+        return targetIndex;
+    }
+
+    let steps = 0;
+
+//    console.log('memory:', JSON.parse(JSON.stringify(memory)));
+    for (let i = 0; i < inputToUse.length && steps < 50000; ) {
+        steps++;
         const instruction = inputToUse[i];
         const arguments = instruction.split(' ');
         const operationType = arguments[0];
@@ -14,21 +52,34 @@
         switch (operationType) {
             case 'cpy':
                 cpy(arguments[1], arguments[2]);
+//                console.log('copy ' + arguments[1] + ' into ' + arguments[2]);
                 i++;
                 break;
             case 'inc':
                 inc(arguments[1]);
+//                console.log('increment ' + arguments[1]);
                 i++;
                 break;
             case 'dec':
                 dec(arguments[1]);
+//                console.log('decrement ' + arguments[1]);
                 i++;
                 break;
             case 'jnz':
                 const newIndex = jnz(arguments[1], getRealNumber(arguments[2]), i);
                 i = newIndex === i ? i + 1 : newIndex;
+//                console.log('jump to ' + newIndex);
+                break;
+            case 'tgl':
+                const toggledIndex = tgl(getRealNumber(arguments[1]), i);
+                i++;
+//                console.log('toggle instruction @ ' + toggledIndex);
                 break;
         }
+
+        console.log(JSON.parse(JSON.stringify(memory)));
     }
+
+    console.log('memory:', memory);
 
 </script>

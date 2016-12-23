@@ -1,23 +1,15 @@
 <script src="assembunny.js"></script>
 <script>
-    const input = ['cpy 1 a', 'cpy 1 b', 'cpy 26 d', 'jnz c 2', 'jnz 1 5', 'cpy 7 c', 'inc d', 'dec c', 'jnz c -2', 'cpy a c', 'inc a', 'dec b', 'jnz b -2', 'cpy c b', 'dec d', 'jnz d -6', 'cpy 18 c', 'cpy 11 d', 'inc a', 'dec d', 'jnz d -2', 'dec c', 'jnz c -5'];
+    const input = {
+        sample: ['cpy 2 a', 'tgl a', 'tgl a', 'tgl a', 'cpy 1 a', 'dec a', 'dec a'],
+    };
 
-    const input2 = ['cpy 41 a', 'inc a', 'inc a', 'dec a', 'jnz a 2', 'dec a'];
+    const inputToUse = input.sample;
 
-    const inputToUse = input;
-
-    // 12.2?
-    if (false) {
-        memory.c = 1;
-    }
-
-    // Note: In the loop, jnz doesn't need i++
-
-    for(let i=0, steps = 0; i<inputToUse.length && steps < 500000000; steps++) {
+    for (let i = 0; i < inputToUse.length; i++) {
         const instruction = inputToUse[i];
         const arguments = instruction.split(' ');
         const operationType = arguments[0];
-//        console.log('arguments:', arguments);
 
         switch (operationType) {
             case 'cpy':
@@ -37,9 +29,6 @@
                 i = newIndex === i ? i + 1 : newIndex;
                 break;
         }
-
-//        console.log('memory:', memory);
     }
-    console.log('memory:', memory);
-    console.log('done');
+
 </script>

@@ -16,7 +16,9 @@ function getRealNumber(number) {
 
 // Put x into memory address y
 function cpy(x, y) {
-    memory[y] = getRealNumber(x);
+    if (Number.isInteger(parseInt(memory[y]))) {
+        memory[y] = getRealNumber(x);
+    }
 }
 
 // Increment on address by 1

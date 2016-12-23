@@ -5,21 +5,21 @@ Code thrown together for Advent of Code 2016. Languages and engagement is bound 
 
 Progress; two stars per day is complete.
 
-25
-24
-23
-22
-21
+25 
+24 
+23 
+22 *
+21 
 20 **
-19
+19 
 18 **
-17
+17 
 16 **
 15 **
 14 *
-13
+13 
 12 **
-11
+11 
 10 **
 9 *
 8 **
